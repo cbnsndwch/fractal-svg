@@ -1,22 +1,23 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { Download } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { FractalGenerator } from '@cbnsndwch/fractal-react';
 import {
     type FractalType,
     type GeneratorOptions,
     FRACTAL_CONFIG,
 } from '@cbnsndwch/fractal-generator';
+import { FractalGenerator } from '@cbnsndwch/fractal-react';
 
-import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import {
@@ -28,6 +29,12 @@ import {
 } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 /**
  * Gradient presets from uiGradients (https://github.com/Ghosh/uiGradients)
@@ -274,374 +281,484 @@ export default function FractalPlayground() {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Controls Panel */}
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1 space-y-4">
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Controls</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {/* Fractal Type */}
-                        <div className="space-y-1.5">
-                            <Label>Fractal Type</Label>
-                            <Select
-                                value={fractalType}
-                                onValueChange={(value) =>
-                                    handleFractalTypeChange(
-                                        value as FractalType,
-                                    )
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a fractal" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="koch">
-                                        Koch Snowflake
-                                    </SelectItem>
-                                    <SelectItem value="dragon">
-                                        Dragon Curve
-                                    </SelectItem>
-                                    <SelectItem value="hilbert">
-                                        Hilbert Curve
-                                    </SelectItem>
-                                    <SelectItem value="levy">
-                                        Lévy C Curve
-                                    </SelectItem>
-                                    <SelectItem value="sierpinski">
-                                        Sierpinski Triangle
-                                    </SelectItem>
-                                    <SelectItem value="peano">
-                                        Peano Curve
-                                    </SelectItem>
-                                    <SelectItem value="gosper">
-                                        Gosper Curve
-                                    </SelectItem>
-                                    <SelectItem value="carpet">
-                                        Sierpinski Carpet
-                                    </SelectItem>
-                                    <SelectItem value="mandelbrot">
-                                        Mandelbrot Set
-                                    </SelectItem>
-                                    <SelectItem value="julia">
-                                        Julia Set
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <p className="text-xs text-muted-foreground">
-                                {config.segmentFormula}
-                            </p>
-                        </div>
-
-                        {/* Iterations / Resolution */}
-                        <div className="space-y-1.5">
-                            {fractalType === 'mandelbrot' ||
-                            fractalType === 'julia' ? (
-                                <>
-                                    <div className="flex justify-between">
-                                        <Label>Resolution</Label>
-                                        <span className="text-sm text-muted-foreground">
-                                            {(options as any).resolution}
-                                        </span>
+                    <CardContent className="p-4">
+                        <Accordion
+                            type="single"
+                            collapsible
+                            defaultValue="fractal-type"
+                            className="w-full"
+                        >
+                            {/* Fractal Type Section */}
+                            <AccordionItem value="fractal-type">
+                                <AccordionTrigger>
+                                    Fractal Type
+                                </AccordionTrigger>
+                                <AccordionContent className="space-y-4">
+                                    <div className="space-y-1.5">
+                                        <Select
+                                            value={fractalType}
+                                            onValueChange={(value) =>
+                                                handleFractalTypeChange(
+                                                    value as FractalType,
+                                                )
+                                            }
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a fractal" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="koch">
+                                                    Koch Snowflake
+                                                </SelectItem>
+                                                <SelectItem value="dragon">
+                                                    Dragon Curve
+                                                </SelectItem>
+                                                <SelectItem value="hilbert">
+                                                    Hilbert Curve
+                                                </SelectItem>
+                                                <SelectItem value="levy">
+                                                    Lévy C Curve
+                                                </SelectItem>
+                                                <SelectItem value="sierpinski">
+                                                    Sierpinski Triangle
+                                                </SelectItem>
+                                                <SelectItem value="peano">
+                                                    Peano Curve
+                                                </SelectItem>
+                                                <SelectItem value="gosper">
+                                                    Gosper Curve
+                                                </SelectItem>
+                                                <SelectItem value="carpet">
+                                                    Sierpinski Carpet
+                                                </SelectItem>
+                                                <SelectItem value="mandelbrot">
+                                                    Mandelbrot Set
+                                                </SelectItem>
+                                                <SelectItem value="julia">
+                                                    Julia Set
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <p className="text-xs text-muted-foreground">
+                                            {config.segmentFormula}
+                                        </p>
                                     </div>
-                                    <Slider
-                                        min={50}
-                                        max={config.maxIter}
-                                        step={10}
-                                        value={[(options as any).resolution]}
-                                        onValueChange={([value]) =>
-                                            updateOption('resolution', value)
-                                        }
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <div className="flex justify-between">
-                                        <Label>Iterations</Label>
-                                        <span className="text-sm text-muted-foreground">
-                                            {options.iter}
-                                        </span>
+
+                                    {/* Koch-specific options */}
+                                    {fractalType === 'koch' && (
+                                        <>
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between">
+                                                    <Label>Sides</Label>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {(options as any).sides}
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={3}
+                                                    max={8}
+                                                    step={1}
+                                                    value={[
+                                                        (options as any).sides,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'sides',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id="inward"
+                                                    checked={
+                                                        (options as any).inward
+                                                    }
+                                                    onCheckedChange={(
+                                                        checked,
+                                                    ) =>
+                                                        updateOption(
+                                                            'inward',
+                                                            checked,
+                                                        )
+                                                    }
+                                                />
+                                                <Label htmlFor="inward">
+                                                    Inward
+                                                </Label>
+                                            </div>
+                                        </>
+                                    )}
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            {/* Dimensions Section */}
+                            <AccordionItem value="dimensions">
+                                <AccordionTrigger>Dimensions</AccordionTrigger>
+                                <AccordionContent className="space-y-4">
+                                    {/* Iterations / Resolution */}
+                                    <div className="space-y-1.5">
+                                        {fractalType === 'mandelbrot' ||
+                                        fractalType === 'julia' ? (
+                                            <>
+                                                <div className="flex justify-between">
+                                                    <Label>Resolution</Label>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {
+                                                            (options as any)
+                                                                .resolution
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={50}
+                                                    max={config.maxIter}
+                                                    step={10}
+                                                    value={[
+                                                        (options as any)
+                                                            .resolution,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'resolution',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="flex justify-between">
+                                                    <Label>Iterations</Label>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {options.iter}
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={1}
+                                                    max={config.maxIter}
+                                                    step={1}
+                                                    value={[options.iter]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'iter',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </>
+                                        )}
                                     </div>
-                                    <Slider
-                                        min={1}
-                                        max={config.maxIter}
-                                        step={1}
-                                        value={[options.iter]}
-                                        onValueChange={([value]) =>
-                                            updateOption('iter', value)
-                                        }
-                                    />
-                                </>
-                            )}
-                        </div>
 
-                        {/* Size */}
-                        <div className="space-y-1.5">
-                            <div className="flex justify-between">
-                                <Label>Size</Label>
-                                <span className="text-sm text-muted-foreground">
-                                    {options.size}px
-                                </span>
-                            </div>
-                            <Slider
-                                min={200}
-                                max={1200}
-                                step={50}
-                                value={[options.size]}
-                                onValueChange={([value]) =>
-                                    updateOption('size', value)
-                                }
-                            />
-                        </div>
-
-                        {/* Koch-specific options */}
-                        {fractalType === 'koch' && (
-                            <>
-                                <div className="space-y-1.5">
-                                    <div className="flex justify-between">
-                                        <Label>Sides</Label>
-                                        <span className="text-sm text-muted-foreground">
-                                            {(options as any).sides}
-                                        </span>
+                                    {/* Size */}
+                                    <div className="space-y-1.5">
+                                        <div className="flex justify-between">
+                                            <Label>Size</Label>
+                                            <span className="text-sm text-muted-foreground">
+                                                {options.size}px
+                                            </span>
+                                        </div>
+                                        <Slider
+                                            min={200}
+                                            max={1200}
+                                            step={50}
+                                            value={[options.size]}
+                                            onValueChange={([value]) =>
+                                                updateOption('size', value)
+                                            }
+                                        />
                                     </div>
-                                    <Slider
-                                        min={3}
-                                        max={8}
-                                        step={1}
-                                        value={[(options as any).sides]}
-                                        onValueChange={([value]) =>
-                                            updateOption('sides', value)
-                                        }
-                                    />
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="inward"
-                                        checked={(options as any).inward}
-                                        onCheckedChange={(checked) =>
-                                            updateOption('inward', checked)
-                                        }
-                                    />
-                                    <Label htmlFor="inward">Inward</Label>
-                                </div>
-                            </>
-                        )}
+                                </AccordionContent>
+                            </AccordionItem>
 
-                        {/* Colors */}
-                        <div className="space-y-3">
-                            <ColorPicker
-                                label="Background"
-                                value={options.bg}
-                                onChange={(value) => updateOption('bg', value)}
-                                allowTransparent
-                            />
-
-                            {/* Circle Backdrop Toggle */}
-                            <div className="space-y-1.5">
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor="circle-bg">
-                                        Circle Backdrop
-                                    </Label>
-                                    <Switch
-                                        id="circle-bg"
-                                        checked={showCircleBg}
-                                        onCheckedChange={setShowCircleBg}
-                                    />
-                                </div>
-                                {showCircleBg && (
+                            {/* Colors & Fill Section */}
+                            <AccordionItem value="colors">
+                                <AccordionTrigger>
+                                    Colors & Fill
+                                </AccordionTrigger>
+                                <AccordionContent className="space-y-4">
+                                    {/* Background */}
                                     <ColorPicker
-                                        label="Circle Color"
-                                        value={options.circleBg}
+                                        label="Background"
+                                        value={options.bg}
                                         onChange={(value) =>
-                                            updateOption('circleBg', value)
+                                            updateOption('bg', value)
                                         }
                                         allowTransparent
                                     />
-                                )}
-                            </div>
 
-                            <ColorPicker
-                                label="Stroke"
-                                value={options.stroke}
-                                onChange={(value) =>
-                                    updateOption('stroke', value)
-                                }
-                                allowTransparent
-                            />
-                        </div>
+                                    {/* Circle Backdrop Toggle */}
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center justify-between">
+                                            <Label htmlFor="circle-bg">
+                                                Circle Backdrop
+                                            </Label>
+                                            <Switch
+                                                id="circle-bg"
+                                                checked={showCircleBg}
+                                                onCheckedChange={
+                                                    setShowCircleBg
+                                                }
+                                            />
+                                        </div>
+                                        {showCircleBg && (
+                                            <ColorPicker
+                                                label="Circle Color"
+                                                value={options.circleBg}
+                                                onChange={(value) =>
+                                                    updateOption(
+                                                        'circleBg',
+                                                        value,
+                                                    )
+                                                }
+                                                allowTransparent
+                                            />
+                                        )}
+                                    </div>
 
-                        {/* Fill Mode Toggle */}
-                        <div className="space-y-1.5">
-                            <Label>Fill Mode</Label>
-                            <div className="flex gap-2">
-                                <Button
-                                    variant={
-                                        !options.gradient ||
-                                        options.gradient.length === 0
-                                            ? 'default'
-                                            : 'outline'
-                                    }
-                                    size="sm"
-                                    className="flex-1"
-                                    onClick={() => {
-                                        setSelectedGradient('None');
-                                        updateOption('gradient', null);
-                                    }}
-                                >
-                                    Solid
-                                </Button>
-                                <Button
-                                    variant={
-                                        options.gradient &&
-                                        options.gradient.length > 0
-                                            ? 'default'
-                                            : 'outline'
-                                    }
-                                    size="sm"
-                                    className="flex-1"
-                                    onClick={() => {
-                                        if (
-                                            !options.gradient ||
-                                            options.gradient.length === 0
-                                        ) {
-                                            setSelectedGradient('Metapolis');
-                                            updateOption('gradient', [
-                                                '#659999',
-                                                '#f4791f',
-                                            ]);
-                                        }
-                                    }}
-                                >
-                                    Gradient
-                                </Button>
-                            </div>
-                        </div>
-
-                        {/* Solid Fill Color (only when no gradient) */}
-                        {(!options.gradient ||
-                            options.gradient.length === 0) && (
-                            <ColorPicker
-                                label="Fill Color"
-                                value={options.fill}
-                                onChange={(value) =>
-                                    updateOption('fill', value)
-                                }
-                                allowTransparent
-                            />
-                        )}
-
-                        {/* Gradient Preset Picker (only when gradient mode) */}
-                        {options.gradient && options.gradient.length > 0 && (
-                            <div className="space-y-1.5">
-                                <Label>Gradient Preset</Label>
-                                <Select
-                                    value={selectedGradient}
-                                    onValueChange={handleGradientChange}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a gradient" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {GRADIENT_PRESETS.filter(
-                                            (p) => p.colors.length > 0,
-                                        ).map((preset) => (
-                                            <SelectItem
-                                                key={preset.name}
-                                                value={preset.name}
+                                    {/* Fill Mode Toggle */}
+                                    <div className="space-y-1.5">
+                                        <Label>Fill Mode</Label>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant={
+                                                    !options.gradient ||
+                                                    options.gradient.length ===
+                                                        0
+                                                        ? 'default'
+                                                        : 'outline'
+                                                }
+                                                size="sm"
+                                                className="flex-1"
+                                                onClick={() => {
+                                                    setSelectedGradient('None');
+                                                    updateOption(
+                                                        'gradient',
+                                                        null,
+                                                    );
+                                                }}
                                             >
-                                                {preset.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {/* Gradient preview swatch */}
-                                <div
-                                    className="h-6 rounded border"
-                                    style={{
-                                        background: `linear-gradient(to right, ${options.gradient.join(', ')})`,
-                                    }}
-                                />
-                                <p className="text-xs text-muted-foreground">
-                                    Gradients from{' '}
-                                    <a
-                                        href="https://github.com/Ghosh/uiGradients"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-primary hover:underline"
-                                    >
-                                        uiGradients
-                                    </a>
-                                </p>
-                            </div>
-                        )}
+                                                Solid
+                                            </Button>
+                                            <Button
+                                                variant={
+                                                    options.gradient &&
+                                                    options.gradient.length > 0
+                                                        ? 'default'
+                                                        : 'outline'
+                                                }
+                                                size="sm"
+                                                className="flex-1"
+                                                onClick={() => {
+                                                    if (
+                                                        !options.gradient ||
+                                                        options.gradient
+                                                            .length === 0
+                                                    ) {
+                                                        setSelectedGradient(
+                                                            'Metapolis',
+                                                        );
+                                                        updateOption(
+                                                            'gradient',
+                                                            [
+                                                                '#659999',
+                                                                '#f4791f',
+                                                            ],
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                Gradient
+                                            </Button>
+                                        </div>
+                                    </div>
 
-                        {/* Gradient Angle (only show when gradient is active) */}
-                        {options.gradient && options.gradient.length > 0 && (
-                            <div className="space-y-1.5">
-                                <div className="flex justify-between">
-                                    <Label>Gradient Angle</Label>
-                                    <span className="text-sm text-muted-foreground">
-                                        {options.gradientAngle}°
-                                    </span>
-                                </div>
-                                <Slider
-                                    min={0}
-                                    max={360}
-                                    step={15}
-                                    value={[options.gradientAngle]}
-                                    onValueChange={([value]) =>
-                                        updateOption('gradientAngle', value)
-                                    }
-                                />
-                            </div>
-                        )}
+                                    {/* Solid Fill Color (only when no gradient) */}
+                                    {(!options.gradient ||
+                                        options.gradient.length === 0) && (
+                                        <ColorPicker
+                                            label="Fill Color"
+                                            value={options.fill}
+                                            onChange={(value) =>
+                                                updateOption('fill', value)
+                                            }
+                                            allowTransparent
+                                        />
+                                    )}
 
-                        {/* Stroke Width */}
-                        <div className="space-y-1.5">
-                            <div className="flex justify-between">
-                                <Label>Stroke Width</Label>
-                                <span className="text-sm text-muted-foreground">
-                                    {options.strokeWidth}px
-                                </span>
-                            </div>
-                            <Slider
-                                min={0}
-                                max={5}
-                                step={0.5}
-                                value={[options.strokeWidth]}
-                                onValueChange={([value]) =>
-                                    updateOption('strokeWidth', value)
-                                }
-                            />
-                        </div>
+                                    {/* Gradient Preset Picker (only when gradient mode) */}
+                                    {options.gradient &&
+                                        options.gradient.length > 0 && (
+                                            <div className="space-y-1.5">
+                                                <Label>Gradient Preset</Label>
+                                                <Select
+                                                    value={selectedGradient}
+                                                    onValueChange={
+                                                        handleGradientChange
+                                                    }
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select a gradient" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {GRADIENT_PRESETS.filter(
+                                                            (p) =>
+                                                                p.colors
+                                                                    .length > 0,
+                                                        ).map((preset) => (
+                                                            <SelectItem
+                                                                key={
+                                                                    preset.name
+                                                                }
+                                                                value={
+                                                                    preset.name
+                                                                }
+                                                            >
+                                                                {preset.name}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                {/* Gradient preview swatch */}
+                                                <div
+                                                    className="h-6 rounded border"
+                                                    style={{
+                                                        background: `linear-gradient(to right, ${options.gradient.join(', ')})`,
+                                                    }}
+                                                />
+                                                <p className="text-xs text-muted-foreground">
+                                                    Gradients from{' '}
+                                                    <a
+                                                        href="https://github.com/Ghosh/uiGradients"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-primary hover:underline"
+                                                    >
+                                                        uiGradients
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        )}
 
-                        {/* Download Button */}
-                        <Button onClick={handleDownload} className="w-full">
-                            Download SVG
-                        </Button>
+                                    {/* Gradient Angle (only show when gradient is active) */}
+                                    {options.gradient &&
+                                        options.gradient.length > 0 && (
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between">
+                                                    <Label>
+                                                        Gradient Angle
+                                                    </Label>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {options.gradientAngle}°
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={0}
+                                                    max={360}
+                                                    step={15}
+                                                    value={[
+                                                        options.gradientAngle,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'gradientAngle',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        )}
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            {/* Stroke Section */}
+                            <AccordionItem value="stroke">
+                                <AccordionTrigger>Stroke</AccordionTrigger>
+                                <AccordionContent className="space-y-4">
+                                    <ColorPicker
+                                        label="Stroke Color"
+                                        value={options.stroke}
+                                        onChange={(value) =>
+                                            updateOption('stroke', value)
+                                        }
+                                        allowTransparent
+                                    />
+
+                                    {/* Stroke Width */}
+                                    <div className="space-y-1.5">
+                                        <div className="flex justify-between">
+                                            <Label>Stroke Width</Label>
+                                            <span className="text-sm text-muted-foreground">
+                                                {options.strokeWidth}px
+                                            </span>
+                                        </div>
+                                        <Slider
+                                            min={0}
+                                            max={5}
+                                            step={0.5}
+                                            value={[options.strokeWidth]}
+                                            onValueChange={([value]) =>
+                                                updateOption(
+                                                    'strokeWidth',
+                                                    value,
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
                     </CardContent>
                 </Card>
+
+                {/* Download Button - Always visible */}
+                <Button
+                    onClick={handleDownload}
+                    className="w-full bg-white font-semibold text-primary hover:bg-white/90 shadow-md"
+                >
+                    <Download className="h-4 w-4" />
+                    Download SVG
+                </Button>
             </div>
 
             {/* Preview Panel */}
             <div className="lg:col-span-2">
-                <Card>
-                    {/* <CardHeader>
-                        <CardTitle>Preview</CardTitle>
-                    </CardHeader> */}
-                    {/* <CardContent> */}
-                        <div
-                            className="fractal-preview flex items-center justify-center rounded-lg overflow-hidden"
-                            style={{
-                                backgroundImage:
-                                    'linear-gradient(45deg, #d9d9d9 25%, transparent 25%), linear-gradient(-45deg, #d9d9d9 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #d9d9d9 75%), linear-gradient(-45deg, transparent 75%, #d9d9d9 75%)',
-                                backgroundSize: '20px 20px',
-                                backgroundPosition:
-                                    '0 0, 0 10px, 10px -10px, -10px 0px',
-                            }}
-                        >
-                            <FractalGenerator options={effectiveOptions} />
-                        </div>
-                    {/* </CardContent> */}
+                <Card className="relative">
+                    {/* Quick Actions Overlay */}
+                    <div className="absolute top-2 right-2 z-10">
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={handleDownload}
+                                        className="bg-white/80 hover:bg-white/95 text-foreground shadow-sm"
+                                    >
+                                        <Download className="h-4 w-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Download SVG</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+                    <div
+                        className="fractal-preview flex items-center justify-center rounded-lg overflow-hidden"
+                        style={{
+                            backgroundImage:
+                                'linear-gradient(45deg, #d9d9d9 25%, transparent 25%), linear-gradient(-45deg, #d9d9d9 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #d9d9d9 75%), linear-gradient(-45deg, transparent 75%, #d9d9d9 75%)',
+                            backgroundSize: '20px 20px',
+                            backgroundPosition:
+                                '0 0, 0 10px, 10px -10px, -10px 0px',
+                        }}
+                    >
+                        <FractalGenerator options={effectiveOptions} />
+                    </div>
                 </Card>
             </div>
         </div>
