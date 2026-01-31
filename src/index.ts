@@ -24,6 +24,7 @@ type BaseArgs = {
     size: number;
     iter: number;
     bg: string;
+    circleBg: string; // Circular background color (drawn behind fractal)
     fill: string;
     gradient: string[] | null;
     gradientAngle: number;
@@ -189,6 +190,7 @@ COMMON OPTIONS:
   --size <px>         Canvas size in pixels (default: 512, min: 64)
   --iter <n>          Iteration depth (type-specific defaults and limits below)
   --bg <color>        Background color (default: none/transparent)
+  --circleBg <color>  Circular background behind fractal (default: none)
   --fill <color>      Fill color (default: black for carpet, none for curves)
   --gradient <colors> Comma-separated gradient color stops (overrides --fill)
                       Example: --gradient "#ff6b6b,#4ecdc4,#45b7d1"
@@ -363,6 +365,7 @@ async function runInteractive(): Promise<Args> {
         size,
         iter,
         bg,
+        circleBg: 'none',
         fill,
         gradient,
         gradientAngle,
@@ -630,6 +633,7 @@ function parseCLIArgs(argv: string[]): Args | null {
     }
     
     const bg = getFlag('--bg') || 'none';
+    const circleBg = getFlag('--circleBg') || 'none';
     let fill = getFlag('--fill') || 'black';
     let gradient: string[] | null = null;
     const gradientStr = getFlag('--gradient');
@@ -663,6 +667,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -691,6 +696,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -713,6 +719,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -743,6 +750,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -772,6 +780,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -793,6 +802,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -814,6 +824,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -835,6 +846,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -856,6 +868,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -877,6 +890,7 @@ function parseCLIArgs(argv: string[]): Args | null {
             size,
             iter,
             bg,
+            circleBg,
             fill,
             gradient,
             gradientAngle,
@@ -900,6 +914,7 @@ function parseCLIArgs(argv: string[]): Args | null {
                 size,
                 iter,
                 bg,
+                circleBg,
                 fill,
                 gradient,
                 gradientAngle,
@@ -1006,18 +1021,16 @@ function generateRects(k: number, pattern: Array<[number, number]>, iter: number
 type Point = { x: number; y: number };
 
 function generateKochCurve(sides: number, iter: number, inward: boolean): Point[] {
-    // Generate base polygon centered at origin
+    // Generate base polygon centered at origin (arbitrary coords, will normalize later)
     const basePoints: Point[] = [];
-    const radius = 0.4; // Fit within [0,1] with margin
-    const centerX = 0.5;
-    const centerY = 0.5;
+    const radius = 1; // Use unit radius, will be normalized
     const angleOffset = -Math.PI / 2; // Start from top
 
     for (let i = 0; i < sides; i++) {
         const angle = angleOffset + (2 * Math.PI * i) / sides;
         basePoints.push({
-            x: centerX + radius * Math.cos(angle),
-            y: centerY + radius * Math.sin(angle),
+            x: radius * Math.cos(angle),
+            y: radius * Math.sin(angle),
         });
     }
 
@@ -1044,11 +1057,12 @@ function generateKochCurve(sides: number, iter: number, inward: boolean): Point[
             // Calculate the peak point (equilateral triangle)
             const midX = (b.x + d.x) / 2;
             const midY = (b.y + d.y) / 2;
-            const height = (Math.sqrt(3) / 6) * Math.sqrt(dx * dx + dy * dy);
+            const segLen = Math.sqrt(dx * dx + dy * dy);
+            const height = (Math.sqrt(3) / 6) * segLen;
             
-            // Perpendicular direction
-            const perpX = -dy / Math.sqrt(dx * dx + dy * dy);
-            const perpY = dx / Math.sqrt(dx * dx + dy * dy);
+            // Perpendicular direction (avoid division by zero)
+            const perpX = segLen > 0 ? -dy / segLen : 0;
+            const perpY = segLen > 0 ? dx / segLen : 0;
 
             const c = {
                 x: midX + direction * height * perpX,
@@ -1061,7 +1075,66 @@ function generateKochCurve(sides: number, iter: number, inward: boolean): Point[
         points = newPoints;
     }
 
-    return points;
+    // Find bounding box
+    let minX = Infinity, maxX = -Infinity;
+    let minY = Infinity, maxY = -Infinity;
+    for (const p of points) {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    }
+    
+    // Find the center of minimum enclosing circle using iterative refinement
+    // Start with bbox center and adjust to minimize max distance
+    let circleCenterX = (minX + maxX) / 2;
+    let circleCenterY = (minY + maxY) / 2;
+    
+    // Iteratively refine - move toward the farthest point
+    for (let i = 0; i < 100; i++) {
+        let maxDist = 0;
+        let farthestX = circleCenterX;
+        let farthestY = circleCenterY;
+        
+        for (const p of points) {
+            const dx = p.x - circleCenterX;
+            const dy = p.y - circleCenterY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > maxDist) {
+                maxDist = dist;
+                farthestX = p.x;
+                farthestY = p.y;
+            }
+        }
+        
+        // Move slightly toward the farthest point
+        const step = 0.01;
+        circleCenterX += step * (farthestX - circleCenterX);
+        circleCenterY += step * (farthestY - circleCenterY);
+    }
+    
+    // Find maximum distance from computed center to any point
+    let maxRadius = 0;
+    for (const p of points) {
+        const dx = p.x - circleCenterX;
+        const dy = p.y - circleCenterY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > maxRadius) maxRadius = dist;
+    }
+    
+    // Normalize to fit within a circle inscribed in [0.05, 0.95] space
+    // This ensures the fractal fits within the circular background
+    const targetRadius = 0.45; // Fits within circle of radius 0.45 centered at 0.5
+    const scale = maxRadius > 0 ? targetRadius / maxRadius : 1;
+    const centerX = 0.5;
+    const centerY = 0.5;
+    
+    const normalizedPoints = points.map(p => ({
+        x: centerX + (p.x - circleCenterX) * scale,
+        y: centerY + (p.y - circleCenterY) * scale,
+    }));
+    
+    return normalizedPoints;
 }
 
 // ============================================================================
@@ -1912,6 +1985,7 @@ function renderPathSVG(params: {
     size: number;
     margin: number;
     bg: string;
+    circleBg?: string; // Circular background color
     fill: string;
     gradient: string[] | null;
     gradientAngle: number;
@@ -1920,7 +1994,7 @@ function renderPathSVG(params: {
     meta: Record<string, string>;
     closePath?: boolean; // Whether to close the path with 'Z' (default: true for Koch)
 }): string {
-    const { points, size, margin, bg, fill, gradient, gradientAngle, stroke, strokeWidth, meta, closePath = true } = params;
+    const { points, size, margin, bg, circleBg, fill, gradient, gradientAngle, stroke, strokeWidth, meta, closePath = true } = params;
 
     const inner = size - 2 * margin;
 
@@ -1967,10 +2041,17 @@ function renderPathSVG(params: {
     // Ensure open paths have a reasonable stroke width
     const finalStrokeWidth = !closePath && strokeWidth === 0 ? 2 : strokeWidth;
 
+        // Circular background element (if specified)
+    const center = size / 2;
+    const circleRadius = size / 2 - margin / 2;
+    const circleBgEl = circleBg && circleBg !== 'none' 
+        ? `\n  <circle cx="${center}" cy="${center}" r="${circleRadius}" fill="${svgEscape(circleBg)}" />`
+        : '';
+
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${defs}
   <title>${svgEscape(metaLines)}</title>
-  <rect x="0" y="0" width="${size}" height="${size}" fill="${svgEscape(bg)}" />
+  <rect x="0" y="0" width="${size}" height="${size}" fill="${svgEscape(bg)}" />${circleBgEl}
   <path d="${pathD}" fill="${fillValue}" stroke="${strokeValue}" stroke-width="${finalStrokeWidth}" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
 `;
@@ -2049,6 +2130,7 @@ function generateKoch(args: KochArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
@@ -2337,6 +2419,7 @@ function generateDragon(args: DragonArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
@@ -2372,6 +2455,7 @@ function generateHilbert(args: HilbertArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
@@ -2407,6 +2491,7 @@ function generateLevy(args: LevyArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
@@ -2442,6 +2527,7 @@ function generateSierpinski(args: SierpinskiArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
@@ -2477,6 +2563,7 @@ function generatePeano(args: PeanoArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
@@ -2512,6 +2599,7 @@ function generateGosper(args: GosperArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
