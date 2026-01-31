@@ -18,6 +18,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/index.ts",
+    "format": "prettier --write .",
     "types": "tsc --noEmit"
   },
   "dependencies": {
