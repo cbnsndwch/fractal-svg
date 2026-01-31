@@ -2,9 +2,13 @@
 
 A TypeScript monorepo for generating beautiful, self-similar fractal patterns in SVG format. Includes an isomorphic generator library, CLI tool, React components, and interactive playground.
 
+[![Fractal SVG Playground](./apps/demo/public/opengraph-image.png)](https://fractals.cbnsndwch.dev/)
+
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D18-green.svg)
+
+**[🎮 Try the Live Demo →](https://fractals.cbnsndwch.dev/)**
 
 ## Features
 
@@ -26,7 +30,7 @@ This monorepo contains four packages:
 | [@cbnsndwch/fractal-generator](./packages/fractal-generator) | Isomorphic SVG generation library | 0.1.0 |
 | [@cbnsndwch/fractal-cli](./packages/fractal-cli) | Command-line interface tool | 0.1.0 |
 | [@cbnsndwch/fractal-react](./packages/fractal-react) | React component library | 0.1.0 |
-| [demo](./apps/demo) | Interactive playground application | - |
+| [demo](./apps/demo) | [Interactive playground](https://fractals.cbnsndwch.dev/) | - |
 
 ## Installation
 
