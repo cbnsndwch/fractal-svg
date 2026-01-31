@@ -10,36 +10,36 @@ Add efficient line-based (path) fractal types that generate a single `<path>` SV
 
 ### New Line-Based Fractals
 
-- [ ] **1. Dragon Curve**
+- [X] **1. Dragon Curve**
     - Classic L-system fractal
     - Simple rules: fold a strip of paper in half repeatedly
     - Iterations: each doubles the number of segments
     - Good for: 10-15 iterations
 
-- [ ] **2. Hilbert Curve**
+- [X] **2. Hilbert Curve**
     - Space-filling curve (visits every point in a grid)
     - Recursive subdivision pattern
     - Creates a continuous path that fills the square
     - Good for: 4-7 iterations
 
-- [ ] **3. Lévy C Curve**
+- [X] **3. Lévy C Curve**
     - Also called "C curve" or "Lévy dragon"
     - Each segment replaced by two at 45° angles
     - Creates beautiful feathery patterns
     - Good for: 10-14 iterations
 
-- [ ] **4. Sierpinski Triangle (Line Version)**
+- [X] **4. Sierpinski Triangle (Line Version)**
     - Arrowhead curve variant - draws outline as single path
     - Alternative to filled-triangle approach
     - Good for: 6-10 iterations
 
-- [ ] **5. Peano Curve**
+- [X] **5. Peano Curve**
     - Original space-filling curve
     - 3x3 subdivision pattern
     - Denser than Hilbert
     - Good for: 3-5 iterations
 
-- [ ] **6. Gosper Curve (Flowsnake)**
+- [X] **6. Gosper Curve (Flowsnake)**
     - Hexagonal space-filling curve
     - Beautiful organic shape
     - Good for: 4-6 iterations
@@ -48,16 +48,16 @@ Add efficient line-based (path) fractal types that generate a single `<path>` SV
 
 ### Refactoring Tasks
 
-- [ ] **7. Unify path rendering**
+- [X] **7. Unify path rendering**
     - Extract common SVG path rendering logic
     - Share gradient/stroke handling across all line fractals
     - Consistent centering and scaling
 
-- [ ] **8. Add stroke-only mode for Koch**
+- [X] **8. Add stroke-only mode for Koch**
     - Option to render as stroke instead of filled shape
     - Useful for intricate patterns
 
-- [ ] **9. Update CLI and interactive menu**
+- [X] **9. Update CLI and interactive menu**
     - Add new fractal types to selection
     - Sensible defaults for each type
 
@@ -65,7 +65,7 @@ Add efficient line-based (path) fractal types that generate a single `<path>` SV
 
 ### Optional Enhancements
 
-- [ ] **10. L-System engine**
+- [X] **10. L-System engine**
     - Generic L-system interpreter
     - Would allow custom user-defined fractals
     - Config: axiom, rules, angle, iterations

@@ -1,6 +1,6 @@
 # @cbnsndwch/fractal-svg
 
-A TypeScript library for generating beautiful, self-similar fractal patterns in SVG format.
+A TypeScript monorepo for generating beautiful, self-similar fractal patterns in SVG format. Includes an isomorphic generator library, CLI tool, React components, and interactive playground.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)
@@ -14,8 +14,48 @@ A TypeScript library for generating beautiful, self-similar fractal patterns in 
 - 🖼️ **Circular Backgrounds** - Optional circular backdrop behind fractals
 - ⚡ **Efficient Rendering** - Line-based fractals use single `<path>` elements
 - 🎮 **Interactive & CLI Modes** - User-friendly prompts or scriptable commands
+- ⚛️ **React Components** - Drop-in components for your React applications
+- 🏗️ **Monorepo Structure** - Modular packages managed with Turborepo
+
+## Packages
+
+This monorepo contains four packages:
+
+| Package | Description | Version |
+|---------|-------------|---------|
+| [@cbnsndwch/fractal-generator](./packages/fractal-generator) | Isomorphic SVG generation library | 0.1.0 |
+| [@cbnsndwch/fractal-cli](./packages/fractal-cli) | Command-line interface tool | 0.1.0 |
+| [@cbnsndwch/fractal-react](./packages/fractal-react) | React component library | 0.1.0 |
+| [demo](./apps/demo) | Interactive playground application | - |
 
 ## Installation
+
+### Using the CLI Tool
+
+```bash
+# Install globally
+npm install -g @cbnsndwch/fractal-cli
+
+# Run in interactive mode
+fractal-svg
+
+# Or use npx
+npx @cbnsndwch/fractal-cli koch --sides 6 --iter 4
+```
+
+### Using the Generator Library
+
+```bash
+npm install @cbnsndwch/fractal-generator
+```
+
+### Using React Components
+
+```bash
+npm install @cbnsndwch/fractal-react
+```
+
+### Development Setup
 
 ```bash
 # Clone the repository
@@ -25,38 +65,83 @@ cd fractal-svg
 # Install dependencies
 pnpm install
 
-# Run in interactive mode
+# Build all packages
+pnpm build
+
+# Run CLI in development mode
 pnpm dev
 ```
 
 ## Quick Start
 
-### Interactive Mode
+### CLI Usage
 
-Simply run the development command to start an interactive session:
+#### Interactive Mode
 
 ```bash
-pnpm dev
+# Using global installation
+fractal-svg
+
+# Or using npx
+npx @cbnsndwch/fractal-cli
 ```
 
-You'll be guided through selecting a fractal type, customizing parameters, and generating your SVG.
-
-### CLI Mode
-
-Generate fractals directly from the command line:
+#### Command Line Mode
 
 ```bash
 # Koch snowflake
-npx tsx src/index.ts koch --sides 3 --iter 4 --stroke black
+fractal-svg koch --sides 3 --iter 4 --stroke black
 
 # Sierpinski carpet with gradient
-npx tsx src/index.ts carpet 1.8928 --gradient "#ff6b6b,#4ecdc4" --size 512
+fractal-svg carpet 1.8928 --gradient "#ff6b6b,#4ecdc4" --size 512
 
 # Dragon curve
-npx tsx src/index.ts dragon --iter 12 --stroke "#ff6b6b" --strokeWidth 1.5
+fractal-svg dragon --iter 12 --stroke "#ff6b6b" --strokeWidth 1.5
 
 # Mandelbrot set boundary
-npx tsx src/index.ts mandelbrot --gradient "#22c55e,#06b6d4,#3b82f6" --resolution 512
+fractal-svg mandelbrot --gradient "#22c55e,#06b6d4,#3b82f6" --resolution 512
+```
+
+### Library Usage
+
+```typescript
+import { generateKochCurve, generateDragonCurve } from '@cbnsndwch/fractal-generator';
+
+// Generate a Koch snowflake
+const svg = generateKochCurve({
+  sides: 6,
+  iterations: 4,
+  size: 512,
+  fill: '#3b82f6'
+});
+
+// Generate a Dragon curve
+const dragonSvg = generateDragonCurve({
+  iterations: 12,
+  size: 512,
+  stroke: '#ff6b6b',
+  strokeWidth: 1.5
+});
+```
+
+### React Usage
+
+```tsx
+import { FractalGenerator } from '@cbnsndwch/fractal-react';
+
+function MyComponent() {
+  return (
+    <FractalGenerator
+      type="koch"
+      options={{
+        sides: 6,
+        iterations: 4,
+        size: 512,
+        fill: '#3b82f6'
+      }}
+    />
+  );
+}
 ```
 
 ## Supported Fractal Types
@@ -81,7 +166,7 @@ npx tsx src/index.ts mandelbrot --gradient "#22c55e,#06b6d4,#3b82f6" --resolutio
 The carpet fractal creates Sierpinski-style patterns using recursive grid subdivision.
 
 ```bash
-npx tsx src/index.ts carpet <dimension> [options]
+fractal-svg carpet <dimension> [options]
 ```
 
 **Parameters:**
@@ -97,10 +182,10 @@ npx tsx src/index.ts carpet <dimension> [options]
 **Examples:**
 ```bash
 # Classic Sierpinski carpet
-npx tsx src/index.ts carpet 1.8928 --iter 4
+fractal-svg carpet 1.8928 --iter 4
 
 # Low-dimension carpet with gradient
-npx tsx src/index.ts carpet 0.63 --gradient "#f59e0b,#ef4444" --size 256
+fractal-svg carpet 0.63 --gradient "#f59e0b,#ef4444" --size 256
 ```
 
 ### Koch Curves
@@ -108,7 +193,7 @@ npx tsx src/index.ts carpet 0.63 --gradient "#f59e0b,#ef4444" --size 256
 Generate Koch curve fractals with customizable polygon bases.
 
 ```bash
-npx tsx src/index.ts koch [options]
+fractal-svg koch [options]
 ```
 
 **Options:**
@@ -120,13 +205,13 @@ npx tsx src/index.ts koch [options]
 **Examples:**
 ```bash
 # Classic Koch snowflake
-npx tsx src/index.ts koch --sides 3 --iter 4 --fill "#3b82f6"
+fractal-svg koch --sides 3 --iter 4 --fill "#3b82f6"
 
 # Hexagonal Koch with gradient
-npx tsx src/index.ts koch --sides 6 --iter 3 --gradient "#22c55e,#3b82f6"
+fractal-svg koch --sides 6 --iter 3 --gradient "#22c55e,#3b82f6"
 
 # Square Koch with inward bumps
-npx tsx src/index.ts koch --sides 4 --inward --stroke black --strokeWidth 2
+fractal-svg koch --sides 4 --inward --stroke black --strokeWidth 2
 ```
 
 ### Mandelbrot Set
@@ -134,7 +219,7 @@ npx tsx src/index.ts koch --sides 4 --inward --stroke black --strokeWidth 2
 Render the boundary of the famous Mandelbrot set using contour tracing.
 
 ```bash
-npx tsx src/index.ts mandelbrot [options]
+fractal-svg mandelbrot [options]
 ```
 
 **Options:**
@@ -150,10 +235,10 @@ npx tsx src/index.ts mandelbrot [options]
 **Examples:**
 ```bash
 # Default Mandelbrot
-npx tsx src/index.ts mandelbrot --gradient "#22c55e,#06b6d4,#3b82f6"
+fractal-svg mandelbrot --gradient "#22c55e,#06b6d4,#3b82f6"
 
 # Zoomed into an interesting region
-npx tsx src/index.ts mandelbrot --centerX -0.75 --zoom 0.5 --resolution 512
+fractal-svg mandelbrot --centerX -0.75 --zoom 0.5 --resolution 512
 ```
 
 ### Julia Sets
@@ -161,7 +246,7 @@ npx tsx src/index.ts mandelbrot --centerX -0.75 --zoom 0.5 --resolution 512
 Generate Julia set boundaries with customizable complex constant c.
 
 ```bash
-npx tsx src/index.ts julia [options]
+fractal-svg julia [options]
 ```
 
 **Options:**
@@ -177,19 +262,19 @@ npx tsx src/index.ts julia [options]
 **Famous Julia Set Constants:**
 ```bash
 # Dendrite pattern (default)
-npx tsx src/index.ts julia --juliaReal -0.7 --juliaImag 0.27015
+fractal-svg julia --juliaReal -0.7 --juliaImag 0.27015
 
 # Spiral arms
-npx tsx src/index.ts julia --juliaReal -0.8 --juliaImag 0.156
+fractal-svg julia --juliaReal -0.8 --juliaImag 0.156
 
 # Rabbit-like
-npx tsx src/index.ts julia --juliaReal -0.4 --juliaImag 0.6
+fractal-svg julia --juliaReal -0.4 --juliaImag 0.6
 
 # Sea horse valley
-npx tsx src/index.ts julia --juliaReal 0.285 --juliaImag 0.01
+fractal-svg julia --juliaReal 0.285 --juliaImag 0.01
 
 # Lightning bolts
-npx tsx src/index.ts julia --juliaReal -0.70176 --juliaImag -0.3842
+fractal-svg julia --juliaReal -0.70176 --juliaImag -0.3842
 ```
 
 ### L-System Fractals
@@ -199,7 +284,7 @@ These fractals use L-system (Lindenmayer system) rules and are rendered as singl
 #### Dragon Curve
 
 ```bash
-npx tsx src/index.ts dragon --iter 12 --stroke "#ff6b6b" --strokeWidth 1.5
+fractal-svg dragon --iter 12 --stroke "#ff6b6b" --strokeWidth 1.5
 ```
 
 #### Hilbert Curve
@@ -207,7 +292,7 @@ npx tsx src/index.ts dragon --iter 12 --stroke "#ff6b6b" --strokeWidth 1.5
 A space-filling curve that visits every point in a grid.
 
 ```bash
-npx tsx src/index.ts hilbert --iter 6 --stroke "#3b82f6" --strokeWidth 1
+fractal-svg hilbert --iter 6 --stroke "#3b82f6" --strokeWidth 1
 ```
 
 #### Lévy C Curve
@@ -215,7 +300,7 @@ npx tsx src/index.ts hilbert --iter 6 --stroke "#3b82f6" --strokeWidth 1
 A beautiful feathery symmetric pattern.
 
 ```bash
-npx tsx src/index.ts levy --iter 14 --stroke "#22c55e" --strokeWidth 0.5
+fractal-svg levy --iter 14 --stroke "#22c55e" --strokeWidth 0.5
 ```
 
 #### Sierpinski Arrowhead
@@ -223,7 +308,7 @@ npx tsx src/index.ts levy --iter 14 --stroke "#22c55e" --strokeWidth 0.5
 Line-based version of the Sierpinski triangle.
 
 ```bash
-npx tsx src/index.ts sierpinski --iter 10 --stroke "#f59e0b"
+fractal-svg sierpinski --iter 10 --stroke "#f59e0b"
 ```
 
 #### Peano Curve
@@ -231,7 +316,7 @@ npx tsx src/index.ts sierpinski --iter 10 --stroke "#f59e0b"
 The original space-filling curve with 3×3 subdivision.
 
 ```bash
-npx tsx src/index.ts peano --iter 4 --stroke "#8b5cf6"
+fractal-svg peano --iter 4 --stroke "#8b5cf6"
 ```
 
 #### Gosper Curve (Flowsnake)
@@ -239,7 +324,7 @@ npx tsx src/index.ts peano --iter 4 --stroke "#8b5cf6"
 A hexagonal space-filling curve with an organic shape.
 
 ```bash
-npx tsx src/index.ts gosper --iter 4 --stroke "#ec4899"
+fractal-svg gosper --iter 4 --stroke "#ec4899"
 ```
 
 ## Common Options
@@ -263,7 +348,7 @@ These options work with all fractal types:
 ### Gradient Example
 
 ```bash
-npx tsx src/index.ts koch --sides 5 --iter 4 \
+fractal-svg koch --sides 5 --iter 4 \
   --gradient "#ff6b6b,#4ecdc4,#45b7d1" \
   --gradientAngle 90 \
   --size 1024
@@ -274,7 +359,7 @@ npx tsx src/index.ts koch --sides 5 --iter 4 \
 Add a circular background behind your fractal (useful for logo designs):
 
 ```bash
-npx tsx src/index.ts dragon --iter 12 \
+fractal-svg dragon --iter 12 \
   --circleBg "#1e1e1e" \
   --stroke "#ffffff" \
   --bg transparent
@@ -314,30 +399,68 @@ output/
 
 ## Development
 
+This project uses Turborepo to manage the monorepo workflow.
+
 ### Building
 
 ```bash
-# Type check
+# Build all packages
+pnpm build
+
+# Build in watch mode
+pnpm dev
+
+# Type check all packages
 pnpm types
 
-# Build for distribution
-pnpm build
+# Lint all packages
+pnpm lint
 ```
 
 ### Project Structure
 
 ```
-src/
-├── index.ts          # Main CLI and fractal generation logic
-└── spiral-fractal.ts # Spiral Koch fractal variant
+fractal-svg/
+├── packages/
+│   ├── fractal-generator/    # Core SVG generation library
+│   │   ├── src/
+│   │   │   ├── index.ts       # Main exports
+│   │   │   ├── generators/    # Individual fractal generators
+│   │   │   ├── types.ts       # TypeScript types
+│   │   │   └── utils.ts       # Shared utilities
+│   │   └── package.json
+│   ├── fractal-cli/           # CLI tool
+│   │   ├── src/
+│   │   │   └── index.ts       # CLI implementation
+│   │   └── package.json
+│   └── fractal-react/         # React components
+│       ├── src/
+│       │   ├── index.ts       # Component exports
+│       │   └── FractalGenerator.tsx
+│       └── package.json
+├── apps/
+│   └── demo/                  # Interactive playground
+│       ├── app/               # Next.js app directory
+│       └── package.json
+├── docs/                      # Documentation
+├── scripts/
+│   └── ralph/                 # AI-assisted development tooling
+└── turbo.json                 # Turborepo configuration
+```
 
-scripts/
-└── ralph/            # AI-assisted development tooling
+### Publishing
 
-docs/
-└── TASKS.md          # Development task tracking
+This monorepo uses [changesets](https://github.com/changesets/changesets) for version management and publishing.
 
-output/               # Generated SVG files
+```bash
+# Add a changeset (describe your changes)
+pnpm changeset
+
+# Update package versions based on changesets
+pnpm version-packages
+
+# Build and publish to npm
+pnpm release
 ```
 
 ## Design Principles

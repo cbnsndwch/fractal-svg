@@ -1,0 +1,57 @@
+{
+  "name": "@cbnsndwch/fractal-cli",
+  "version": "0.2.0",
+  "description": "CLI tool for generating fractal SVGs",
+  "license": "MIT",
+  "author": {
+    "name": "cbnsndwch",
+    "url": "https://cbnsndwch.io/projects/fractal-svg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbnsndwch/fractal-svg.git",
+    "directory": "packages/fractal-cli"
+  },
+  "homepage": "https://github.com/cbnsndwch/fractal-svg#readme",
+  "bugs": {
+    "url": "https://github.com/cbnsndwch/fractal-svg/issues"
+  },
+  "keywords": [
+    "fractal",
+    "svg",
+    "cli",
+    "generator",
+    "generative-art",
+    "koch",
+    "mandelbrot",
+    "julia",
+    "command-line"
+  ],
+  "type": "module",
+  "bin": {
+    "fractal-svg": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "format": "prettier --write .",
+    "types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cbnsndwch/fractal-generator": "workspace:*",
+    "@inquirer/prompts": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
