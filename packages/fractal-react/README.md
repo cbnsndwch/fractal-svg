@@ -19,7 +19,7 @@ npm install react react-dom
 ### Basic Example
 
 ```tsx
-import { FractalGenerator } from '@cbnsndwch/fractal-react';
+import { FractalGenerator } from "@cbnsndwch/fractal-react";
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
           sides: 6,
           iterations: 4,
           size: 512,
-          fill: '#3b82f6'
+          fill: "#3b82f6",
         }}
       />
     </div>
@@ -46,9 +46,9 @@ function App() {
   type="mandelbrot"
   options={{
     resolution: 512,
-    gradient: '#22c55e,#06b6d4,#3b82f6',
+    gradient: "#22c55e,#06b6d4,#3b82f6",
     gradientAngle: 135,
-    size: 800
+    size: 800,
   }}
 />
 ```
@@ -56,8 +56,8 @@ function App() {
 ### Dynamic Parameters
 
 ```tsx
-import { useState } from 'react';
-import { FractalGenerator } from '@cbnsndwch/fractal-react';
+import { useState } from "react";
+import { FractalGenerator } from "@cbnsndwch/fractal-react";
 
 function InteractiveFractal() {
   const [iterations, setIterations] = useState(4);
@@ -78,7 +78,7 @@ function InteractiveFractal() {
           {iterations}
         </label>
       </div>
-      
+
       <div>
         <label>
           Sides:
@@ -99,7 +99,7 @@ function InteractiveFractal() {
           sides,
           iterations,
           size: 512,
-          gradient: '#ff6b6b,#4ecdc4'
+          gradient: "#ff6b6b,#4ecdc4",
         }}
       />
     </div>
@@ -125,6 +125,7 @@ interface FractalGeneratorProps {
 ```
 
 **`type`** (required): The type of fractal to generate. Must be one of:
+
 - `'koch'` - Koch curve
 - `'dragon'` - Dragon curve
 - `'hilbert'` - Hilbert curve
@@ -150,11 +151,11 @@ interface FractalGeneratorProps {
 <FractalGenerator
   type="koch"
   options={{
-    sides: 6,           // Number of polygon sides
-    inward: false,      // Make bumps point inward
+    sides: 6, // Number of polygon sides
+    inward: false, // Make bumps point inward
     iterations: 4,
     size: 512,
-    fill: '#3b82f6'
+    fill: "#3b82f6",
   }}
 />
 ```
@@ -166,9 +167,9 @@ interface FractalGeneratorProps {
   type="dragon"
   options={{
     iterations: 12,
-    stroke: '#ff6b6b',
+    stroke: "#ff6b6b",
     strokeWidth: 1.5,
-    size: 512
+    size: 512,
   }}
 />
 ```
@@ -180,9 +181,9 @@ interface FractalGeneratorProps {
   type="hilbert"
   options={{
     iterations: 6,
-    stroke: '#3b82f6',
+    stroke: "#3b82f6",
     strokeWidth: 1,
-    size: 512
+    size: 512,
   }}
 />
 ```
@@ -193,13 +194,13 @@ interface FractalGeneratorProps {
 <FractalGenerator
   type="carpet"
   options={{
-    dimension: 1.8928,  // Required: fractal dimension
+    dimension: 1.8928, // Required: fractal dimension
     kMin: 2,
     kMax: 9,
     maxRects: 40000,
     iterations: 4,
-    gradient: '#ff6b6b,#4ecdc4',
-    size: 512
+    gradient: "#ff6b6b,#4ecdc4",
+    size: 512,
   }}
 />
 ```
@@ -216,8 +217,8 @@ interface FractalGeneratorProps {
     zoom: 3,
     maxIter: 100,
     threshold: 2,
-    gradient: '#22c55e,#06b6d4,#3b82f6',
-    size: 800
+    gradient: "#22c55e,#06b6d4,#3b82f6",
+    size: 800,
   }}
 />
 ```
@@ -234,8 +235,8 @@ interface FractalGeneratorProps {
     centerX: 0,
     centerY: 0,
     zoom: 3.5,
-    gradient: '#ff6b6b,#4ecdc4,#45b7d1',
-    size: 800
+    gradient: "#ff6b6b,#4ecdc4,#45b7d1",
+    size: 800,
   }}
 />
 ```
@@ -246,16 +247,16 @@ All fractal types support these common options:
 
 ```typescript
 interface CommonOptions {
-  size?: number;           // Canvas size in pixels (default: 512)
-  iterations?: number;     // Iteration depth (varies by fractal)
-  bg?: string;            // Background color (default: 'transparent')
-  circleBg?: string;      // Optional circular background color
-  fill?: string;          // Fill color (for filled fractals)
-  stroke?: string;        // Stroke color (for stroked fractals)
-  strokeWidth?: number;   // Stroke width
-  gradient?: string;      // Comma-separated gradient colors
+  size?: number; // Canvas size in pixels (default: 512)
+  iterations?: number; // Iteration depth (varies by fractal)
+  bg?: string; // Background color (default: 'transparent')
+  circleBg?: string; // Optional circular background color
+  fill?: string; // Fill color (for filled fractals)
+  stroke?: string; // Stroke color (for stroked fractals)
+  strokeWidth?: number; // Stroke width
+  gradient?: string; // Comma-separated gradient colors
   gradientAngle?: number; // Gradient angle in degrees (default: 135)
-  margin?: number;        // Margin around fractal (default: 10)
+  margin?: number; // Margin around fractal (default: 10)
 }
 ```
 
@@ -269,15 +270,15 @@ interface CommonOptions {
   options={{
     sides: 5,
     iterations: 4,
-    gradient: '#ff6b6b,#4ecdc4',
-    size: 600
+    gradient: "#ff6b6b,#4ecdc4",
+    size: 600,
   }}
   className="fractal-container"
   style={{
-    border: '2px solid #ccc',
-    borderRadius: '8px',
-    padding: '20px',
-    backgroundColor: '#f5f5f5'
+    border: "2px solid #ccc",
+    borderRadius: "8px",
+    padding: "20px",
+    backgroundColor: "#f5f5f5",
   }}
 />
 ```
@@ -285,20 +286,21 @@ interface CommonOptions {
 ### Responsive Fractal
 
 ```tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function ResponsiveFractal() {
   const [size, setSize] = useState(512);
 
   useEffect(() => {
     const handleResize = () => {
-      const containerWidth = document.getElementById('fractal')?.clientWidth || 512;
+      const containerWidth =
+        document.getElementById("fractal")?.clientWidth || 512;
       setSize(Math.min(containerWidth, 800));
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -309,7 +311,7 @@ function ResponsiveFractal() {
           sides: 6,
           iterations: 4,
           size,
-          gradient: '#ff6b6b,#4ecdc4'
+          gradient: "#ff6b6b,#4ecdc4",
         }}
       />
     </div>
@@ -320,8 +322,8 @@ function ResponsiveFractal() {
 ### Download SVG
 
 ```tsx
-import { FractalGenerator } from '@cbnsndwch/fractal-react';
-import { generateKochCurve } from '@cbnsndwch/fractal-generator';
+import { FractalGenerator } from "@cbnsndwch/fractal-react";
+import { generateKochCurve } from "@cbnsndwch/fractal-generator";
 
 function DownloadableFractal() {
   const handleDownload = () => {
@@ -329,14 +331,14 @@ function DownloadableFractal() {
       sides: 6,
       iterations: 4,
       size: 1024,
-      gradient: '#ff6b6b,#4ecdc4'
+      gradient: "#ff6b6b,#4ecdc4",
     });
 
-    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const blob = new Blob([svg], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = 'fractal.svg';
+    link.download = "fractal.svg";
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -349,7 +351,7 @@ function DownloadableFractal() {
           sides: 6,
           iterations: 4,
           size: 512,
-          gradient: '#ff6b6b,#4ecdc4'
+          gradient: "#ff6b6b,#4ecdc4",
         }}
       />
       <button onClick={handleDownload}>Download SVG</button>
@@ -363,9 +365,9 @@ function DownloadableFractal() {
 This component is a client component. Make sure to use the `'use client'` directive:
 
 ```tsx
-'use client';
+"use client";
 
-import { FractalGenerator } from '@cbnsndwch/fractal-react';
+import { FractalGenerator } from "@cbnsndwch/fractal-react";
 
 export default function Page() {
   return (
@@ -373,8 +375,8 @@ export default function Page() {
       type="dragon"
       options={{
         iterations: 12,
-        stroke: '#ff6b6b',
-        size: 512
+        stroke: "#ff6b6b",
+        size: 512,
       }}
     />
   );
@@ -386,7 +388,7 @@ export default function Page() {
 Perfect for including fractals in your documentation:
 
 ```mdx
-import { FractalGenerator } from '@cbnsndwch/fractal-react';
+import { FractalGenerator } from "@cbnsndwch/fractal-react";
 
 # My Fractal Documentation
 
@@ -398,7 +400,7 @@ Here's a beautiful Koch snowflake:
     sides: 6,
     iterations: 4,
     size: 512,
-    gradient: '#22c55e,#3b82f6'
+    gradient: "#22c55e,#3b82f6",
   }}
 />
 ```
@@ -408,12 +410,12 @@ Here's a beautiful Koch snowflake:
 This library is fully typed with TypeScript:
 
 ```typescript
-import type { 
-  FractalType, 
+import type {
+  FractalType,
   FractalOptions,
   KochOptions,
-  DragonOptions
-} from '@cbnsndwch/fractal-react';
+  DragonOptions,
+} from "@cbnsndwch/fractal-react";
 ```
 
 ## Performance
@@ -421,12 +423,18 @@ import type {
 The component memoizes the generated SVG and only regenerates when options change. For optimal performance:
 
 1. **Memoize options objects** to prevent unnecessary re-renders:
+
    ```tsx
-   const options = useMemo(() => ({
-     sides: 6,
-     iterations: 4,
-     size: 512
-   }), [/* dependencies */]);
+   const options = useMemo(
+     () => ({
+       sides: 6,
+       iterations: 4,
+       size: 512,
+     }),
+     [
+       /* dependencies */
+     ],
+   );
    ```
 
 2. **Use reasonable iteration limits** - higher iterations exponentially increase complexity.
