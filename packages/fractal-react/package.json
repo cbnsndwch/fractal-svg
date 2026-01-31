@@ -23,6 +23,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "format": "prettier --write .",
     "types": "tsc --noEmit"
   },
   "dependencies": {
