@@ -7,6 +7,26 @@
     "name": "cbnsndwch",
     "url": "https://cbnsndwch.io/projects/fractal-svg"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbnsndwch/fractal-svg.git",
+    "directory": "packages/fractal-cli"
+  },
+  "homepage": "https://github.com/cbnsndwch/fractal-svg#readme",
+  "bugs": {
+    "url": "https://github.com/cbnsndwch/fractal-svg/issues"
+  },
+  "keywords": [
+    "fractal",
+    "svg",
+    "cli",
+    "generator",
+    "generative-art",
+    "koch",
+    "mandelbrot",
+    "julia",
+    "command-line"
+  ],
   "type": "module",
   "bin": {
     "fractal-svg": "./dist/index.js"

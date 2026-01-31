@@ -7,6 +7,29 @@
     "name": "cbnsndwch",
     "url": "https://cbnsndwch.io/projects/fractal-svg"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbnsndwch/fractal-svg.git",
+    "directory": "packages/fractal-generator"
+  },
+  "homepage": "https://github.com/cbnsndwch/fractal-svg#readme",
+  "bugs": {
+    "url": "https://github.com/cbnsndwch/fractal-svg/issues"
+  },
+  "keywords": [
+    "fractal",
+    "svg",
+    "generator",
+    "koch",
+    "mandelbrot",
+    "julia",
+    "sierpinski",
+    "dragon-curve",
+    "hilbert-curve",
+    "generative-art",
+    "typescript",
+    "isomorphic"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
