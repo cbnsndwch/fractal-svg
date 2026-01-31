@@ -23,6 +23,7 @@ fractal-svg
 ```
 
 The interactive mode will:
+
 1. Prompt you to select a fractal type
 2. Ask for customization parameters
 3. Generate the SVG and save it to the output directory
@@ -44,10 +45,12 @@ fractal-svg koch [options]
 ```
 
 **Options:**
+
 - `--sides <n>` - Number of sides (3 = snowflake, 4 = square, etc.) [default: 3]
 - `--inward` - Make bumps point inward [default: false]
 
 **Examples:**
+
 ```bash
 # Classic Koch snowflake
 fractal-svg koch --sides 3 --iter 4 --fill "#3b82f6"
@@ -66,6 +69,7 @@ fractal-svg dragon [options]
 ```
 
 **Example:**
+
 ```bash
 fractal-svg dragon --iter 12 --stroke "#ff6b6b" --strokeWidth 1.5
 ```
@@ -77,6 +81,7 @@ fractal-svg hilbert [options]
 ```
 
 **Example:**
+
 ```bash
 fractal-svg hilbert --iter 6 --stroke "#3b82f6" --strokeWidth 1
 ```
@@ -88,6 +93,7 @@ fractal-svg levy [options]
 ```
 
 **Example:**
+
 ```bash
 fractal-svg levy --iter 14 --stroke "#22c55e" --strokeWidth 0.5
 ```
@@ -99,6 +105,7 @@ fractal-svg sierpinski [options]
 ```
 
 **Example:**
+
 ```bash
 fractal-svg sierpinski --iter 10 --stroke "#f59e0b"
 ```
@@ -110,6 +117,7 @@ fractal-svg peano [options]
 ```
 
 **Example:**
+
 ```bash
 fractal-svg peano --iter 4 --stroke "#8b5cf6"
 ```
@@ -121,6 +129,7 @@ fractal-svg gosper [options]
 ```
 
 **Example:**
+
 ```bash
 fractal-svg gosper --iter 4 --stroke "#ec4899"
 ```
@@ -132,14 +141,17 @@ fractal-svg carpet <dimension> [options]
 ```
 
 **Arguments:**
+
 - `<dimension>` - Fractal dimension (0, 2]. Classic Sierpinski is ~1.8928 (required)
 
 **Options:**
+
 - `--kMin <n>` - Minimum subdivision factor [default: 2]
 - `--kMax <n>` - Maximum subdivision factor [default: 9]
 - `--maxRects <n>` - Max rectangles before stopping [default: 40000]
 
 **Examples:**
+
 ```bash
 # Classic Sierpinski carpet
 fractal-svg carpet 1.8928 --iter 4
@@ -155,6 +167,7 @@ fractal-svg mandelbrot [options]
 ```
 
 **Options:**
+
 - `--resolution <n>` - Grid resolution for contour tracing [default: 256]
 - `--centerX <n>` - Center X in complex plane [default: -0.5]
 - `--centerY <n>` - Center Y in complex plane [default: 0]
@@ -163,6 +176,7 @@ fractal-svg mandelbrot [options]
 - `--threshold <n>` - Contour threshold level [default: 2]
 
 **Examples:**
+
 ```bash
 # Default Mandelbrot
 fractal-svg mandelbrot --gradient "#22c55e,#06b6d4,#3b82f6"
@@ -178,6 +192,7 @@ fractal-svg julia [options]
 ```
 
 **Options:**
+
 - `--juliaReal <n>` - Real part of c constant [default: -0.7]
 - `--juliaImag <n>` - Imaginary part of c constant [default: 0.27015]
 - `--resolution <n>` - Grid resolution [default: 256]
@@ -186,6 +201,7 @@ fractal-svg julia [options]
 - `--zoom <n>` - View width [default: 3.5]
 
 **Famous Julia constants:**
+
 ```bash
 # Dendrite pattern
 fractal-svg julia --juliaReal -0.7 --juliaImag 0.27015
@@ -204,19 +220,19 @@ fractal-svg julia --juliaReal 0.285 --juliaImag 0.01
 
 These options work with all fractal types:
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--out <file>` | Output SVG filename | `<type>.svg` |
-| `--size <px>` | Canvas size in pixels (min: 64) | 512 |
-| `--iter <n>` | Iteration depth | type-specific |
-| `--bg <color>` | Background color | transparent |
-| `--circleBg <color>` | Circular background behind fractal | none |
-| `--fill <color>` | Fill color | type-specific |
-| `--gradient <colors>` | Comma-separated gradient stops | none |
-| `--gradientAngle <n>` | Gradient angle in degrees | 135 |
-| `--stroke <color>` | Stroke color | type-specific |
-| `--strokeWidth <n>` | Stroke width | type-specific |
-| `--margin <px>` | Margin around the fractal | 10 |
+| Option                | Description                        | Default       |
+| --------------------- | ---------------------------------- | ------------- |
+| `--out <file>`        | Output SVG filename                | `<type>.svg`  |
+| `--size <px>`         | Canvas size in pixels (min: 64)    | 512           |
+| `--iter <n>`          | Iteration depth                    | type-specific |
+| `--bg <color>`        | Background color                   | transparent   |
+| `--circleBg <color>`  | Circular background behind fractal | none          |
+| `--fill <color>`      | Fill color                         | type-specific |
+| `--gradient <colors>` | Comma-separated gradient stops     | none          |
+| `--gradientAngle <n>` | Gradient angle in degrees          | 135           |
+| `--stroke <color>`    | Stroke color                       | type-specific |
+| `--strokeWidth <n>`   | Stroke width                       | type-specific |
+| `--margin <px>`       | Margin around the fractal          | 10            |
 
 ## Advanced Examples
 
@@ -263,18 +279,18 @@ output/
 
 Each fractal type has recommended iteration limits to prevent memory exhaustion:
 
-| Fractal | Default | Maximum | Complexity |
-|---------|---------|---------|------------|
-| carpet | 4 | 8 | N^iter rectangles |
-| koch | 4 | 7 | 4^iter segments |
-| mandelbrot | 4 | 10 | resolution-based |
-| julia | 4 | 10 | resolution-based |
-| dragon | 12 | 18 | 2^iter segments |
-| hilbert | 6 | 9 | 4^iter segments |
-| levy | 14 | 18 | 2^iter segments |
-| sierpinski | 10 | 14 | 3^iter segments |
-| peano | 4 | 6 | 9^iter segments |
-| gosper | 4 | 6 | 7^iter segments |
+| Fractal    | Default | Maximum | Complexity        |
+| ---------- | ------- | ------- | ----------------- |
+| carpet     | 4       | 8       | N^iter rectangles |
+| koch       | 4       | 7       | 4^iter segments   |
+| mandelbrot | 4       | 10      | resolution-based  |
+| julia      | 4       | 10      | resolution-based  |
+| dragon     | 12      | 18      | 2^iter segments   |
+| hilbert    | 6       | 9       | 4^iter segments   |
+| levy       | 14      | 18      | 2^iter segments   |
+| sierpinski | 10      | 14      | 3^iter segments   |
+| peano      | 4       | 6       | 9^iter segments   |
+| gosper     | 4       | 6       | 7^iter segments   |
 
 ## Development
 

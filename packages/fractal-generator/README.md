@@ -18,24 +18,24 @@ import {
   generateMandelbrotSet,
   generateCarpetFractal,
   // ... and more
-} from '@cbnsndwch/fractal-generator';
+} from "@cbnsndwch/fractal-generator";
 
 // Generate a Koch snowflake
 const svg = generateKochCurve({
   sides: 6,
   iterations: 4,
   size: 512,
-  fill: '#3b82f6',
-  stroke: 'none',
-  bg: 'transparent'
+  fill: "#3b82f6",
+  stroke: "none",
+  bg: "transparent",
 });
 
 // Save to file (Node.js)
-import { writeFileSync } from 'fs';
-writeFileSync('koch-snowflake.svg', svg);
+import { writeFileSync } from "fs";
+writeFileSync("koch-snowflake.svg", svg);
 
 // Use in browser
-document.getElementById('container').innerHTML = svg;
+document.getElementById("container").innerHTML = svg;
 ```
 
 ## Supported Fractals
@@ -62,17 +62,17 @@ All generator functions accept an options object with these common properties:
 
 ```typescript
 interface CommonOptions {
-  size?: number;           // Canvas size in pixels (default: 512)
-  iterations?: number;     // Iteration depth (varies by fractal)
-  bg?: string;            // Background color (default: 'transparent')
-  circleBg?: string;      // Optional circular background color
-  fill?: string;          // Fill color (for filled fractals)
-  stroke?: string;        // Stroke color (for stroked fractals)
-  strokeWidth?: number;   // Stroke width (default varies by fractal)
-  gradient?: string;      // Comma-separated gradient colors (e.g., "#ff0000,#00ff00,#0000ff")
+  size?: number; // Canvas size in pixels (default: 512)
+  iterations?: number; // Iteration depth (varies by fractal)
+  bg?: string; // Background color (default: 'transparent')
+  circleBg?: string; // Optional circular background color
+  fill?: string; // Fill color (for filled fractals)
+  stroke?: string; // Stroke color (for stroked fractals)
+  strokeWidth?: number; // Stroke width (default varies by fractal)
+  gradient?: string; // Comma-separated gradient colors (e.g., "#ff0000,#00ff00,#0000ff")
   gradientAngle?: number; // Gradient angle in degrees (default: 135)
-  margin?: number;        // Margin around fractal (default: 10)
-  out?: string;          // Output filename (for CLI only)
+  margin?: number; // Margin around fractal (default: 10)
+  out?: string; // Output filename (for CLI only)
 }
 ```
 
@@ -82,15 +82,15 @@ interface CommonOptions {
 
 ```typescript
 interface KochOptions extends CommonOptions {
-  sides?: number;    // Number of sides (3 = snowflake, 4 = square, etc.)
-  inward?: boolean;  // Make bumps point inward
+  sides?: number; // Number of sides (3 = snowflake, 4 = square, etc.)
+  inward?: boolean; // Make bumps point inward
 }
 
 generateKochCurve({
   sides: 6,
   iterations: 4,
   inward: false,
-  fill: '#3b82f6'
+  fill: "#3b82f6",
 });
 ```
 
@@ -98,16 +98,16 @@ generateKochCurve({
 
 ```typescript
 interface CarpetOptions extends CommonOptions {
-  dimension: number;   // Fractal dimension (0, 2] (required)
-  kMin?: number;      // Minimum subdivision factor (default: 2)
-  kMax?: number;      // Maximum subdivision factor (default: 9)
-  maxRects?: number;  // Max rectangles before stopping (default: 40000)
+  dimension: number; // Fractal dimension (0, 2] (required)
+  kMin?: number; // Minimum subdivision factor (default: 2)
+  kMax?: number; // Maximum subdivision factor (default: 9)
+  maxRects?: number; // Max rectangles before stopping (default: 40000)
 }
 
 generateCarpetFractal({
-  dimension: 1.8928,  // Classic Sierpinski carpet
+  dimension: 1.8928, // Classic Sierpinski carpet
   iterations: 4,
-  gradient: '#ff6b6b,#4ecdc4'
+  gradient: "#ff6b6b,#4ecdc4",
 });
 ```
 
@@ -115,19 +115,19 @@ generateCarpetFractal({
 
 ```typescript
 interface MandelbrotOptions extends CommonOptions {
-  resolution?: number;  // Grid resolution (default: 256)
-  centerX?: number;     // Center X in complex plane (default: -0.5)
-  centerY?: number;     // Center Y in complex plane (default: 0)
-  zoom?: number;        // View width in complex plane (default: 3)
-  maxIter?: number;     // Max escape iterations (default: 100)
-  threshold?: number;   // Contour threshold level (default: 2)
+  resolution?: number; // Grid resolution (default: 256)
+  centerX?: number; // Center X in complex plane (default: -0.5)
+  centerY?: number; // Center Y in complex plane (default: 0)
+  zoom?: number; // View width in complex plane (default: 3)
+  maxIter?: number; // Max escape iterations (default: 100)
+  threshold?: number; // Contour threshold level (default: 2)
 }
 
 generateMandelbrotSet({
   resolution: 512,
   centerX: -0.75,
   zoom: 0.5,
-  gradient: '#22c55e,#06b6d4,#3b82f6'
+  gradient: "#22c55e,#06b6d4,#3b82f6",
 });
 ```
 
@@ -135,19 +135,19 @@ generateMandelbrotSet({
 
 ```typescript
 interface JuliaOptions extends CommonOptions {
-  juliaReal?: number;   // Real part of c constant (default: -0.7)
-  juliaImag?: number;   // Imaginary part of c constant (default: 0.27015)
-  resolution?: number;  // Grid resolution (default: 256)
-  centerX?: number;     // Center X (default: 0)
-  centerY?: number;     // Center Y (default: 0)
-  zoom?: number;        // View width (default: 3.5)
+  juliaReal?: number; // Real part of c constant (default: -0.7)
+  juliaImag?: number; // Imaginary part of c constant (default: 0.27015)
+  resolution?: number; // Grid resolution (default: 256)
+  centerX?: number; // Center X (default: 0)
+  centerY?: number; // Center Y (default: 0)
+  zoom?: number; // View width (default: 3.5)
 }
 
 generateJuliaSet({
   juliaReal: -0.8,
   juliaImag: 0.156,
   resolution: 512,
-  gradient: '#ff6b6b,#4ecdc4,#45b7d1'
+  gradient: "#ff6b6b,#4ecdc4,#45b7d1",
 });
 ```
 
@@ -158,14 +158,14 @@ All L-system fractals (Dragon, Hilbert, Lévy, Sierpinski, Peano, Gosper) use th
 ```typescript
 generateDragonCurve({
   iterations: 12,
-  stroke: '#ff6b6b',
-  strokeWidth: 1.5
+  stroke: "#ff6b6b",
+  strokeWidth: 1.5,
 });
 
 generateHilbertCurve({
   iterations: 6,
-  stroke: '#3b82f6',
-  strokeWidth: 1
+  stroke: "#3b82f6",
+  strokeWidth: 1,
 });
 ```
 
@@ -177,9 +177,9 @@ generateHilbertCurve({
 const svg = generateKochCurve({
   sides: 5,
   iterations: 4,
-  gradient: '#ff6b6b,#4ecdc4,#45b7d1',
+  gradient: "#ff6b6b,#4ecdc4,#45b7d1",
   gradientAngle: 90,
-  size: 1024
+  size: 1024,
 });
 ```
 
@@ -188,11 +188,11 @@ const svg = generateKochCurve({
 ```typescript
 const logo = generateDragonCurve({
   iterations: 12,
-  circleBg: '#1e1e1e',
-  stroke: '#ffffff',
+  circleBg: "#1e1e1e",
+  stroke: "#ffffff",
   strokeWidth: 2,
-  bg: 'transparent',
-  size: 512
+  bg: "transparent",
+  size: 512,
 });
 ```
 
@@ -201,24 +201,24 @@ const logo = generateDragonCurve({
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Fractal Demo</title>
-</head>
-<body>
-  <div id="fractal-container"></div>
-  
-  <script type="module">
-    import { generateKochCurve } from '@cbnsndwch/fractal-generator';
-    
-    const svg = generateKochCurve({
-      sides: 6,
-      iterations: 4,
-      gradient: '#ff6b6b,#4ecdc4'
-    });
-    
-    document.getElementById('fractal-container').innerHTML = svg;
-  </script>
-</body>
+  <head>
+    <title>Fractal Demo</title>
+  </head>
+  <body>
+    <div id="fractal-container"></div>
+
+    <script type="module">
+      import { generateKochCurve } from "@cbnsndwch/fractal-generator";
+
+      const svg = generateKochCurve({
+        sides: 6,
+        iterations: 4,
+        gradient: "#ff6b6b,#4ecdc4",
+      });
+
+      document.getElementById("fractal-container").innerHTML = svg;
+    </script>
+  </body>
 </html>
 ```
 
@@ -227,12 +227,12 @@ const logo = generateDragonCurve({
 This library is written in TypeScript and provides full type definitions.
 
 ```typescript
-import type { 
-  KochOptions, 
-  CarpetOptions, 
+import type {
+  KochOptions,
+  CarpetOptions,
   MandelbrotOptions,
-  CommonOptions 
-} from '@cbnsndwch/fractal-generator';
+  CommonOptions,
+} from "@cbnsndwch/fractal-generator";
 ```
 
 ## Design Principles
