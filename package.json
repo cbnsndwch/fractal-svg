@@ -10,6 +10,7 @@
     "scripts": {
         "build": "turbo build",
         "dev": "turbo dev",
+        "format": "turbo format",
         "types": "turbo types",
         "lint": "turbo lint",
         "ralph": "tsx scripts/ralph/ralph.ts",
@@ -25,6 +26,7 @@
         "eslint": "^9.39.1",
         "eslint-plugin-react-hooks": "^7.0.1",
         "eslint-plugin-react-refresh": "^0.4.24",
+        "prettier": "^3.8.1",
         "tailwindcss": "^4.1.18",
         "tsx": "^4.21.0",
         "turbo": "^2.8.1",
