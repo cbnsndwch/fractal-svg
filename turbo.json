@@ -13,6 +13,9 @@
         "format": {
             "cache": false
         },
+        "types": {
+            "dependsOn": ["^build"]
+        },
         "lint": {
             "dependsOn": ["^lint"],
             "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
