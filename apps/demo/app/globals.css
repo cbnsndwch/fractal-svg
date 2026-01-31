@@ -3,21 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #fef6f0;
   --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #2d1f1a;
     --foreground: #ededed;
   }
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  /* Orange Fun gradient (#fc4a1a → #f7b733) */
+  background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    /* Dark mode: Orange Fun gradient */
+    background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+  }
 }
 
 @layer utilities {
