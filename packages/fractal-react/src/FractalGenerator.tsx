@@ -1,7 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { generateFractalSVG, type GeneratorOptions } from '@cbnsndwch/fractal-generator';
+import React from "react";
+import {
+  generateFractalSVG,
+  type GeneratorOptions,
+} from "@cbnsndwch/fractal-generator";
 
 export interface FractalGeneratorProps {
   options: GeneratorOptions;
@@ -13,9 +16,13 @@ export interface FractalGeneratorProps {
  * React component for rendering fractal SVGs
  * Can be used in both client and server components
  */
-export function FractalGenerator({ options, className, style }: FractalGeneratorProps) {
+export function FractalGenerator({
+  options,
+  className,
+  style,
+}: FractalGeneratorProps) {
   const svgString = generateFractalSVG(options);
-  
+
   return (
     <div
       className={className}
