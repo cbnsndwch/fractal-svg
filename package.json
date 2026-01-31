@@ -1,6 +1,6 @@
 {
     "name": "@cbnsndwch/fractal-svg",
-    "description": "A typescript library for creating fractal patterns in SVG format.",
+    "description": "A typescript library for creating fractal patterns in SVG format",
     "version": "0.1.0",
     "license": "MIT",
     "author": {
