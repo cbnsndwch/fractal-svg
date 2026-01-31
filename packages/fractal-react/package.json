@@ -1,0 +1,46 @@
+{
+  "name": "@cbnsndwch/fractal-react",
+  "version": "0.1.0",
+  "description": "React components for rendering fractal SVGs",
+  "license": "MIT",
+  "author": {
+    "name": "cbnsndwch",
+    "url": "https://cbnsndwch.io/projects/fractal-svg"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cbnsndwch/fractal-generator": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.14",
+    "@types/react-dom": "^19.0.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "~5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
