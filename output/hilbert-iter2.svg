@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="fractalGradient" x1="85.4%" y1="14.6%" x2="14.6%" y2="85.4%">
+      <stop offset="0%" stop-color="#ff6b6b" />
+      <stop offset="100%" stop-color="#4ecdc4" />
+    </linearGradient>
+  </defs>
+  <title>type=hilbert | dimension=2.0000 | iter=2 | segments=16</title>
+  <rect x="0" y="0" width="512" height="512" fill="white" />
+  <path d="M 137.9200 374.0800 L 59.2000 374.0800 L 59.2000 295.3600 L 137.9200 295.3600 L 137.9200 216.6400 L 137.9200 137.9200 L 216.6400 137.9200 L 216.6400 216.6400 L 295.3600 216.6400 L 295.3600 137.9200 L 374.0800 137.9200 L 374.0800 216.6400 L 374.0800 295.3600 L 452.8000 295.3600 L 452.8000 374.0800 L 374.0800 374.0800 Z" fill="url(#fractalGradient)" stroke="none" stroke-width="0" stroke-linejoin="round" />
+</svg>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="fractalGradient" x1="0.0%" y1="50.0%" x2="100.0%" y2="50.0%">
+      <stop offset="0%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#eab308" />
+    </linearGradient>
+  </defs>
+  <title>targetD=1.8928 | chosenK=3 | chosenN=8 | actualD=1.89278926 | err=0.00001074 | iter=2 | rects=64</title>
+  <desc>Strictly self-similar grid fractal. targetD=1.8928 | chosenK=3 | chosenN=8 | actualD=1.89278926 | err=0.00001074 | iter=2 | rects=64</desc>
+  <style>g.cells rect { fill: url(#fractalGradient); stroke: none; stroke-width: 0; shape-rendering: crispEdges; }</style>
+  <rect x="0" y="0" width="64" height="64" fill="white" />
+  <g class="cells">
+<rect x="29.5556" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="34.4444" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="34.4444" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="34.4444" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="34.4444" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="34.4444" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="19.7778" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="34.4444" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="19.7778" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="19.7778" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="34.4444" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="19.7778" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="34.4444" width="4.8889" height="4.8889" />
+<rect x="44.2222" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="44.2222" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="39.3333" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="49.1111" y="29.5556" width="4.8889" height="4.8889" />
+<rect x="44.2222" y="34.4444" width="4.8889" height="4.8889" />
+<rect x="39.3333" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="49.1111" y="24.6667" width="4.8889" height="4.8889" />
+<rect x="39.3333" y="34.4444" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="44.2222" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="39.3333" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="44.2222" width="4.8889" height="4.8889" />
+<rect x="34.4444" y="44.2222" width="4.8889" height="4.8889" />
+<rect x="29.5556" y="49.1111" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="39.3333" width="4.8889" height="4.8889" />
+<rect x="34.4444" y="39.3333" width="4.8889" height="4.8889" />
+<rect x="24.6667" y="49.1111" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="19.7778" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="19.7778" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="19.7778" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="19.7778" width="4.8889" height="4.8889" />
+<rect x="44.2222" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="44.2222" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="39.3333" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="49.1111" y="14.8889" width="4.8889" height="4.8889" />
+<rect x="44.2222" y="19.7778" width="4.8889" height="4.8889" />
+<rect x="39.3333" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="49.1111" y="10.0000" width="4.8889" height="4.8889" />
+<rect x="39.3333" y="19.7778" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="44.2222" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="39.3333" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="44.2222" width="4.8889" height="4.8889" />
+<rect x="19.7778" y="44.2222" width="4.8889" height="4.8889" />
+<rect x="14.8889" y="49.1111" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="39.3333" width="4.8889" height="4.8889" />
+<rect x="19.7778" y="39.3333" width="4.8889" height="4.8889" />
+<rect x="10.0000" y="49.1111" width="4.8889" height="4.8889" />
+  </g>
+</svg>
