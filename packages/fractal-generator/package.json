@@ -1,0 +1,35 @@
+{
+  "name": "@cbnsndwch/fractal-generator",
+  "version": "0.1.0",
+  "description": "Isomorphic TypeScript library for generating fractal SVGs",
+  "license": "MIT",
+  "author": {
+    "name": "cbnsndwch",
+    "url": "https://cbnsndwch.io/projects/fractal-svg"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "~5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
