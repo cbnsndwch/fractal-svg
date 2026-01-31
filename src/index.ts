@@ -2167,6 +2167,7 @@ function renderMandelbrotSVG(params: {
     size: number;
     margin: number;
     bg: string;
+    circleBg: string;
     fill: string;
     gradient: string[] | null;
     gradientAngle: number;
@@ -2174,7 +2175,7 @@ function renderMandelbrotSVG(params: {
     strokeWidth: number;
     meta: Record<string, string>;
 }): string {
-    const { contours, resolution, size, margin, bg, fill, gradient, gradientAngle, stroke, strokeWidth, meta } = params;
+    const { contours, resolution, size, margin, bg, circleBg, fill, gradient, gradientAngle, stroke, strokeWidth, meta } = params;
 
     // Invariant: output must be square, centered in circular bounds
     const center = size / 2;
@@ -2208,10 +2209,16 @@ function renderMandelbrotSVG(params: {
         fillValue = gradResult.fillValue;
     }
 
+    // Circular background element (if specified)
+    const circleRadius = size / 2 - margin / 2;
+    const circleBgEl = circleBg && circleBg !== 'none' 
+        ? `\n  <circle cx="${center}" cy="${center}" r="${circleRadius}" fill="${svgEscape(circleBg)}" />`
+        : '';
+
     return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${defs}
   <title>${svgEscape(metaLines)}</title>
-  <rect x="0" y="0" width="${size}" height="${size}" fill="${svgEscape(bg)}" />
+  <rect x="0" y="0" width="${size}" height="${size}" fill="${svgEscape(bg)}" />${circleBgEl}
   <path d="${paths}" fill="${fillValue}" stroke="${strokeValue}" stroke-width="${strokeWidth}" fill-rule="evenodd" />
 </svg>
 `;
@@ -2329,6 +2336,7 @@ function generateMandelbrot(args: MandelbrotArgs): void {
         size: args.size,
         margin: args.margin,
         bg: args.bg,
+        circleBg: args.circleBg,
         fill: args.fill,
         gradient: args.gradient,
         gradientAngle: args.gradientAngle,
