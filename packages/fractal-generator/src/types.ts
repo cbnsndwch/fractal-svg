@@ -52,6 +52,7 @@ export type MandelbrotOptions = BaseGeneratorOptions & {
   centerY: number;
   zoom: number;
   maxIter: number;
+  numBands: number;
 };
 
 export type JuliaOptions = BaseGeneratorOptions & {
@@ -63,6 +64,7 @@ export type JuliaOptions = BaseGeneratorOptions & {
   centerY: number;
   zoom: number;
   maxIter: number;
+  numBands: number;
 };
 
 export type DragonOptions = BaseGeneratorOptions & { type: "dragon" };
@@ -98,11 +100,15 @@ export const FRACTAL_CONFIG: Record<FractalType, FractalConfig> = {
   },
   koch: { defaultIter: 4, maxIter: 7, segmentFormula: "4^iter segments" },
   mandelbrot: {
-    defaultIter: 200,
-    maxIter: 500,
-    segmentFormula: "resolution-based",
+    defaultIter: 100,
+    maxIter: 1000,
+    segmentFormula: "multi-band contour",
   },
-  julia: { defaultIter: 200, maxIter: 500, segmentFormula: "resolution-based" },
+  julia: {
+    defaultIter: 100,
+    maxIter: 1000,
+    segmentFormula: "multi-band contour",
+  },
   dragon: { defaultIter: 12, maxIter: 18, segmentFormula: "2^iter+1 segments" },
   hilbert: { defaultIter: 6, maxIter: 9, segmentFormula: "4^iter segments" },
   levy: { defaultIter: 14, maxIter: 18, segmentFormula: "2^iter+1 segments" },

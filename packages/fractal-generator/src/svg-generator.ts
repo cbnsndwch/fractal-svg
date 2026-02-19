@@ -632,37 +632,119 @@ function normalizePoints(points: Point[]): Point[] {
 }
 
 // ============================================================================
-// Mandelbrot and Julia Set Generation (Marching Squares)
+// Mandelbrot and Julia Set Generation (Multi-Band Contours)
 // ============================================================================
 
 /**
- * Calculate escape time for a point in the Mandelbrot set
- * Uses smooth iteration count for better contours
+ * Parse a hex color string to RGB components
  */
-function mandelbrotEscape(cx: number, cy: number, maxIter: number): number {
-  let x = 0;
-  let y = 0;
-  let iter = 0;
-
-  while (x * x + y * y <= 4 && iter < maxIter) {
-    const xNew = x * x - y * y + cx;
-    y = 2 * x * y + cy;
-    x = xNew;
-    iter++;
-  }
-
-  // Smooth iteration count for better contours
-  if (iter < maxIter) {
-    const log_zn = Math.log(x * x + y * y) / 2;
-    const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
-    return iter + 1 - nu;
-  }
-  return iter;
+function parseHexColor(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.substring(0, 2), 16),
+    parseInt(h.substring(2, 4), 16),
+    parseInt(h.substring(4, 6), 16),
+  ];
 }
 
 /**
- * Calculate escape time for a point in the Julia set
- * Unlike Mandelbrot, z starts at the point and c is a fixed constant
+ * Linearly interpolate between two RGB colors and return as hex
+ */
+function lerpColor(
+  c1: [number, number, number],
+  c2: [number, number, number],
+  t: number,
+): string {
+  const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+  const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+  const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+/**
+ * Generate N band colors from a gradient or solid fill.
+ * Colors go from outermost band (fastest escape) to innermost (near set boundary).
+ */
+function generateBandColors(
+  gradient: string[] | null,
+  fill: string,
+  numBands: number,
+): string[] {
+  const colors: string[] = [];
+
+  if (gradient && gradient.length >= 2) {
+    // Interpolate evenly along the multi-stop gradient
+    for (let i = 0; i < numBands; i++) {
+      const t = numBands > 1 ? i / (numBands - 1) : 0;
+      const scaledT = t * (gradient.length - 1);
+      const idx = Math.min(Math.floor(scaledT), gradient.length - 2);
+      const localT = scaledT - idx;
+      const c1 = parseHexColor(gradient[idx]);
+      const c2 = parseHexColor(gradient[idx + 1]);
+      colors.push(lerpColor(c1, c2, localT));
+    }
+  } else {
+    // Solid fill: create shades from a lighter version to the full fill color
+    const fillHex = fill === "none" || fill === "transparent" ? "#000000" : fill;
+    const fillRgb = parseHexColor(fillHex);
+    const light: [number, number, number] = [
+      Math.min(255, fillRgb[0] + Math.round((255 - fillRgb[0]) * 0.85)),
+      Math.min(255, fillRgb[1] + Math.round((255 - fillRgb[1]) * 0.85)),
+      Math.min(255, fillRgb[2] + Math.round((255 - fillRgb[2]) * 0.85)),
+    ];
+    for (let i = 0; i < numBands; i++) {
+      const t = numBands > 1 ? i / (numBands - 1) : 1;
+      colors.push(lerpColor(light, fillRgb, t));
+    }
+  }
+
+  return colors;
+}
+
+/**
+ * Calculate escape time for a point in the Mandelbrot set.
+ * Includes cardioid and period-2 bulb optimization.
+ * Uses smooth (continuous) iteration count for better contour quality.
+ */
+function mandelbrotEscape(cx: number, cy: number, maxIter: number): number {
+  // Cardioid check: skip iteration for points inside the main cardioid
+  const q = (cx - 0.25) * (cx - 0.25) + cy * cy;
+  if (q * (q + (cx - 0.25)) <= 0.25 * cy * cy) {
+    return maxIter;
+  }
+
+  // Period-2 bulb check
+  if ((cx + 1) * (cx + 1) + cy * cy <= 0.0625) {
+    return maxIter;
+  }
+
+  let x = 0;
+  let y = 0;
+  let x2 = 0;
+  let y2 = 0;
+  let iter = 0;
+
+  // Optimized escape loop (3 multiplications per iteration)
+  while (x2 + y2 <= 4 && iter < maxIter) {
+    y = 2 * x * y + cy;
+    x = x2 - y2 + cx;
+    x2 = x * x;
+    y2 = y * y;
+    iter++;
+  }
+
+  // Smooth (continuous) iteration count for sub-integer precision contours
+  if (iter < maxIter) {
+    const log_zn = Math.log(x2 + y2) / 2;
+    const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
+    return iter + 1 - nu;
+  }
+  return maxIter;
+}
+
+/**
+ * Calculate escape time for a point in the Julia set.
+ * Uses smooth iteration count for better contour quality.
  */
 function juliaEscape(
   zx: number,
@@ -673,22 +755,44 @@ function juliaEscape(
 ): number {
   let x = zx;
   let y = zy;
+  let x2 = x * x;
+  let y2 = y * y;
   let iter = 0;
 
-  while (x * x + y * y <= 4 && iter < maxIter) {
-    const xNew = x * x - y * y + cx;
+  while (x2 + y2 <= 4 && iter < maxIter) {
     y = 2 * x * y + cy;
-    x = xNew;
+    x = x2 - y2 + cx;
+    x2 = x * x;
+    y2 = y * y;
     iter++;
   }
 
-  // Smooth iteration count for better contours
+  // Smooth iteration count
   if (iter < maxIter) {
-    const log_zn = Math.log(x * x + y * y) / 2;
+    const log_zn = Math.log(x2 + y2) / 2;
     const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
     return iter + 1 - nu;
   }
-  return iter;
+  return maxIter;
+}
+
+/**
+ * Pad an escape-time grid with zeros around the border.
+ * This ensures ALL marching-squares contours form closed loops,
+ * since the zero border guarantees no contour reaches the grid edge.
+ */
+function padGrid(grid: number[][]): number[][] {
+  const rows = grid.length;
+  const cols = grid[0].length;
+  const padded: number[][] = [];
+
+  padded.push(new Array(cols + 2).fill(0));
+  for (const row of grid) {
+    padded.push([0, ...row, 0]);
+  }
+  padded.push(new Array(cols + 2).fill(0));
+
+  return padded;
 }
 
 /**
@@ -906,6 +1010,35 @@ function marchingSquares(
   return paths;
 }
 
+/**
+ * Convert marching-squares contours from a padded grid to SVG path data.
+ * The padded grid has 1-cell border of zeros, so grid coordinates are offset by 1.
+ * Maps grid coords → normalized [-1,1] → SVG viewport with margin.
+ */
+function contoursToSVGPath(
+  contours: Array<Array<[number, number]>>,
+  resolution: number,
+  size: number,
+  margin: number,
+): string {
+  const center = size / 2;
+  const radius = size / 2 - margin;
+
+  return contours
+    .map((contour) => {
+      const parts = contour.map((p, i) => {
+        // Adjust for padding offset: original data is at [1, resolution+1]
+        const nx = ((p[0] - 1) / resolution) * 2 - 1;
+        const ny = ((p[1] - 1) / resolution) * 2 - 1;
+        const x = center + nx * radius;
+        const y = center + ny * radius;
+        return `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+      });
+      return parts.join(" ") + " Z";
+    })
+    .join(" ");
+}
+
 function renderMandelbrotSVG(options: MandelbrotOptions): string {
   const {
     size,
@@ -913,7 +1046,6 @@ function renderMandelbrotSVG(options: MandelbrotOptions): string {
     bg,
     fill,
     gradient,
-    gradientAngle,
     stroke,
     strokeWidth,
     resolution,
@@ -921,6 +1053,7 @@ function renderMandelbrotSVG(options: MandelbrotOptions): string {
     centerY,
     zoom,
     maxIter,
+    numBands,
   } = options;
 
   // Compute escape time grid
@@ -932,43 +1065,40 @@ function renderMandelbrotSVG(options: MandelbrotOptions): string {
     maxIter,
   );
 
-  // Extract contour at the boundary (where escape time ≈ 95% of maxIter)
-  const threshold = maxIter * 0.95;
-  const contours = marchingSquares(grid, threshold);
+  // Pad the grid with zeros so all contours form closed loops
+  const paddedGrid = padGrid(grid);
 
-  // Convert contours from grid coordinates to SVG coordinates
-  const center = size / 2;
-  const radius = size / 2 - margin;
+  // Generate linearly-spaced band thresholds
+  const thresholds: number[] = [];
+  for (let i = 1; i <= numBands; i++) {
+    thresholds.push((i / numBands) * maxIter);
+  }
 
-  const paths = contours
-    .map((contour) => {
-      const pathParts = contour.map((p, i) => {
-        // Normalize to [-1, 1] then scale to radius
-        const nx = (p[0] / resolution) * 2 - 1;
-        const ny = (p[1] / resolution) * 2 - 1;
-        const x = center + nx * radius;
-        const y = center + ny * radius;
-        return `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
-      });
-      return pathParts.join(" ");
-    })
-    .join(" ");
+  // Generate per-band colors from the gradient or solid fill
+  const bandColors = generateBandColors(gradient, fill, numBands);
 
-  let defs = "";
-  let fillValue = svgEscape(fill);
-  let strokeValue = svgEscape(stroke);
+  // Build SVG path elements for each band (rendered outer → inner)
+  const bandElements: string[] = [];
+  for (let b = 0; b < numBands; b++) {
+    const contours = marchingSquares(paddedGrid, thresholds[b]);
+    if (contours.length === 0) continue;
 
-  if (gradient && gradient.length >= 2) {
-    const gradResult = buildGradientDefs(gradient, gradientAngle);
-    defs = gradResult.defs;
-    fillValue = gradResult.fillValue;
+    const pathData = contoursToSVGPath(contours, resolution, size, margin);
+    const color = svgEscape(bandColors[b]);
+    const strokeAttr =
+      stroke !== "none" && stroke !== "transparent"
+        ? ` stroke="${svgEscape(stroke)}" stroke-width="${strokeWidth * 0.5}"`
+        : "";
+    bandElements.push(
+      `  <path d="${pathData}" fill="${color}"${strokeAttr} fill-rule="evenodd" />`,
+    );
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${defs}
+<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <title>Mandelbrot Set</title>
   <rect x="0" y="0" width="${size}" height="${size}" fill="${svgEscape(bg)}" />
-  <path d="${paths}" fill="${fillValue}" stroke="${strokeValue}" stroke-width="${strokeWidth}" fill-rule="evenodd" />
+${bandElements.join("\n")}
 </svg>
 `;
 }
@@ -980,7 +1110,6 @@ function renderJuliaSVG(options: JuliaOptions): string {
     bg,
     fill,
     gradient,
-    gradientAngle,
     stroke,
     strokeWidth,
     resolution,
@@ -990,6 +1119,7 @@ function renderJuliaSVG(options: JuliaOptions): string {
     centerY,
     zoom,
     maxIter,
+    numBands,
   } = options;
 
   // Compute escape time grid
@@ -1003,74 +1133,40 @@ function renderJuliaSVG(options: JuliaOptions): string {
     maxIter,
   );
 
-  // Extract contour at the boundary
-  const threshold = maxIter * 0.95;
-  const contours = marchingSquares(grid, threshold);
+  // Pad the grid with zeros so all contours form closed loops
+  const paddedGrid = padGrid(grid);
 
-  // Calculate bounding box for auto-fit scaling
-  let minX = Infinity,
-    maxX = -Infinity;
-  let minY = Infinity,
-    maxY = -Infinity;
-
-  for (const contour of contours) {
-    for (const [x, y] of contour) {
-      minX = Math.min(minX, x);
-      maxX = Math.max(maxX, x);
-      minY = Math.min(minY, y);
-      maxY = Math.max(maxY, y);
-    }
+  // Generate linearly-spaced band thresholds
+  const thresholds: number[] = [];
+  for (let i = 1; i <= numBands; i++) {
+    thresholds.push((i / numBands) * maxIter);
   }
 
-  // Handle empty contours
-  if (!Number.isFinite(minX)) {
-    minX = 0;
-    maxX = resolution;
-    minY = 0;
-    maxY = resolution;
-  }
+  // Generate per-band colors
+  const bandColors = generateBandColors(gradient, fill, numBands);
 
-  // Calculate content dimensions and uniform scale
-  const contentWidth = maxX - minX;
-  const contentHeight = maxY - minY;
-  const contentCenterX = (minX + maxX) / 2;
-  const contentCenterY = (minY + maxY) / 2;
+  // Build SVG path elements for each band (rendered outer → inner)
+  const bandElements: string[] = [];
+  for (let b = 0; b < numBands; b++) {
+    const contours = marchingSquares(paddedGrid, thresholds[b]);
+    if (contours.length === 0) continue;
 
-  const viewportSize = size - 2 * margin;
-  const scaleX = contentWidth > 0 ? viewportSize / contentWidth : 1;
-  const scaleY = contentHeight > 0 ? viewportSize / contentHeight : 1;
-  const uniformScale = Math.min(scaleX, scaleY);
-  const center = size / 2;
-
-  // Convert contours to SVG path with uniform scaling
-  const paths = contours
-    .map((contour) => {
-      const pathParts = contour.map((p, i) => {
-        const dx = p[0] - contentCenterX;
-        const dy = p[1] - contentCenterY;
-        const x = center + dx * uniformScale;
-        const y = center + dy * uniformScale;
-        return `${i === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
-      });
-      return pathParts.join(" ");
-    })
-    .join(" ");
-
-  let defs = "";
-  let fillValue = svgEscape(fill);
-  let strokeValue = svgEscape(stroke);
-
-  if (gradient && gradient.length >= 2) {
-    const gradResult = buildGradientDefs(gradient, gradientAngle);
-    defs = gradResult.defs;
-    fillValue = gradResult.fillValue;
+    const pathData = contoursToSVGPath(contours, resolution, size, margin);
+    const color = svgEscape(bandColors[b]);
+    const strokeAttr =
+      stroke !== "none" && stroke !== "transparent"
+        ? ` stroke="${svgEscape(stroke)}" stroke-width="${strokeWidth * 0.5}"`
+        : "";
+    bandElements.push(
+      `  <path d="${pathData}" fill="${color}"${strokeAttr} fill-rule="evenodd" />`,
+    );
   }
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${defs}
+<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <title>Julia Set</title>
   <rect x="0" y="0" width="${size}" height="${size}" fill="${svgEscape(bg)}" />
-  <path d="${paths}" fill="${fillValue}" stroke="${strokeValue}" stroke-width="${strokeWidth}" fill-rule="evenodd" />
+${bandElements.join("\n")}
 </svg>
 `;
 }
