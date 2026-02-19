@@ -685,7 +685,8 @@ function generateBandColors(
     }
   } else {
     // Solid fill: create shades from a lighter version to the full fill color
-    const fillHex = fill === "none" || fill === "transparent" ? "#000000" : fill;
+    const fillHex =
+      fill === "none" || fill === "transparent" ? "#000000" : fill;
     const fillRgb = parseHexColor(fillHex);
     const light: [number, number, number] = [
       Math.min(255, fillRgb[0] + Math.round((255 - fillRgb[0]) * 0.85)),
