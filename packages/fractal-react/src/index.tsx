@@ -20,9 +20,7 @@ export type {
 } from "./useFractalPlayground.js";
 
 // Re-export types and config from generator for convenience
-export {
-  FRACTAL_CONFIG,
-} from "@cbnsndwch/fractal-generator";
+export { FRACTAL_CONFIG } from "@cbnsndwch/fractal-generator";
 export type {
   GeneratorOptions,
   FractalType,

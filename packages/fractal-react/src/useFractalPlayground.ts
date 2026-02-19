@@ -101,7 +101,7 @@ export interface FractalPlaygroundActions {
   /** Update a single option */
   updateOption: <K extends keyof GeneratorOptions>(
     key: K,
-    value: GeneratorOptions[K]
+    value: GeneratorOptions[K],
   ) => void;
   /** Update multiple options at once */
   updateOptions: (updates: Partial<GeneratorOptions>) => void;
@@ -169,7 +169,7 @@ export type UseFractalPlaygroundReturn = FractalPlaygroundState &
  * ```
  */
 export function useFractalPlayground(
-  opts: UseFractalPlaygroundOptions = {}
+  opts: UseFractalPlaygroundOptions = {},
 ): UseFractalPlaygroundReturn {
   const {
     initialOptions = {},
@@ -195,7 +195,7 @@ export function useFractalPlayground(
       ...debouncedOptions,
       circleBg: showCircleBg ? debouncedOptions.circleBg : "none",
     }),
-    [debouncedOptions, showCircleBg]
+    [debouncedOptions, showCircleBg],
   );
 
   const fractalConfig = FRACTAL_CONFIG[options.type];
@@ -204,7 +204,7 @@ export function useFractalPlayground(
     <K extends keyof GeneratorOptions>(key: K, value: GeneratorOptions[K]) => {
       setOptions((prev) => ({ ...prev, [key]: value }) as GeneratorOptions);
     },
-    []
+    [],
   );
 
   const updateOptions = useCallback((updates: Partial<GeneratorOptions>) => {
@@ -267,7 +267,7 @@ export function useFractalPlayground(
           setOptions({ ...baseOpts, type } as GeneratorOptions);
       }
     },
-    [options.gradient, options.gradientAngle]
+    [options.gradient, options.gradientAngle],
   );
 
   const setGradient = useCallback((gradientName: string) => {
@@ -275,10 +275,13 @@ export function useFractalPlayground(
     const preset = GRADIENT_PRESETS.find((p) => p.name === gradientName);
     if (preset) {
       const newGradient = preset.colors.length > 0 ? preset.colors : null;
-      setOptions((prev) => ({
-        ...prev,
-        gradient: newGradient,
-      }) as GeneratorOptions);
+      setOptions(
+        (prev) =>
+          ({
+            ...prev,
+            gradient: newGradient,
+          }) as GeneratorOptions,
+      );
     }
   }, []);
 
@@ -289,7 +292,7 @@ export function useFractalPlayground(
       if (!svgElement) return null;
       return new XMLSerializer().serializeToString(svgElement);
     },
-    []
+    [],
   );
 
   const downloadSVG = useCallback(
@@ -305,7 +308,7 @@ export function useFractalPlayground(
       link.click();
       URL.revokeObjectURL(url);
     },
-    [options.type, getSVGString]
+    [options.type, getSVGString],
   );
 
   const reset = useCallback(() => {
