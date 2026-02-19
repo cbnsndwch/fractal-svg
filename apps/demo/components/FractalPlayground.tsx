@@ -202,24 +202,26 @@ export default function FractalPlayground() {
                 setOptions({
                     ...baseOpts,
                     type: 'mandelbrot',
-                    resolution: 200,
+                    resolution: 300,
                     centerX: -0.5,
                     centerY: 0,
-                    zoom: 1,
-                    maxIter: 200,
+                    zoom: 3.5,
+                    maxIter: 100,
+                    numBands: 20,
                 });
                 break;
             case 'julia':
                 setOptions({
                     ...baseOpts,
                     type: 'julia',
-                    resolution: 200,
+                    resolution: 300,
                     juliaReal: -0.7,
-                    juliaImag: 0.27,
+                    juliaImag: 0.27015,
                     centerX: 0,
                     centerY: 0,
-                    zoom: 1,
-                    maxIter: 200,
+                    zoom: 4,
+                    maxIter: 100,
+                    numBands: 20,
                 });
                 break;
             case 'dragon':
@@ -427,6 +429,213 @@ export default function FractalPlayground() {
                                             </div>
                                         </>
                                     )}
+
+                                    {/* Mandelbrot/Julia-specific options */}
+                                    {(fractalType === 'mandelbrot' ||
+                                        fractalType === 'julia') && (
+                                        <>
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between">
+                                                    <Label>
+                                                        Contour Bands
+                                                    </Label>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {
+                                                            (options as any)
+                                                                .numBands
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={4}
+                                                    max={40}
+                                                    step={1}
+                                                    value={[
+                                                        (options as any)
+                                                            .numBands,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'numBands',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between">
+                                                    <Label>
+                                                        Max Iterations
+                                                    </Label>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {
+                                                            (options as any)
+                                                                .maxIter
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={20}
+                                                    max={500}
+                                                    step={10}
+                                                    value={[
+                                                        (options as any)
+                                                            .maxIter,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'maxIter',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between">
+                                                    <Label>Zoom</Label>
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {(
+                                                            options as any
+                                                        ).zoom.toFixed(2)}
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={0.1}
+                                                    max={8}
+                                                    step={0.1}
+                                                    value={[
+                                                        (options as any).zoom,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'zoom',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div className="space-y-1.5">
+                                                    <div className="flex justify-between">
+                                                        <Label>
+                                                            Center X
+                                                        </Label>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {(
+                                                                options as any
+                                                            ).centerX.toFixed(
+                                                                2,
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <Slider
+                                                        min={-2.5}
+                                                        max={1.5}
+                                                        step={0.05}
+                                                        value={[
+                                                            (options as any)
+                                                                .centerX,
+                                                        ]}
+                                                        onValueChange={([
+                                                            value,
+                                                        ]) =>
+                                                            updateOption(
+                                                                'centerX',
+                                                                value,
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <div className="flex justify-between">
+                                                        <Label>
+                                                            Center Y
+                                                        </Label>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {(
+                                                                options as any
+                                                            ).centerY.toFixed(
+                                                                2,
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <Slider
+                                                        min={-2}
+                                                        max={2}
+                                                        step={0.05}
+                                                        value={[
+                                                            (options as any)
+                                                                .centerY,
+                                                        ]}
+                                                        onValueChange={([
+                                                            value,
+                                                        ]) =>
+                                                            updateOption(
+                                                                'centerY',
+                                                                value,
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {/* Julia-specific c constant */}
+                                    {fractalType === 'julia' && (
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between">
+                                                    <Label>c (Real)</Label>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {(
+                                                            options as any
+                                                        ).juliaReal.toFixed(3)}
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={-2}
+                                                    max={2}
+                                                    step={0.005}
+                                                    value={[
+                                                        (options as any)
+                                                            .juliaReal,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'juliaReal',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <div className="flex justify-between">
+                                                    <Label>c (Imag)</Label>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {(
+                                                            options as any
+                                                        ).juliaImag.toFixed(3)}
+                                                    </span>
+                                                </div>
+                                                <Slider
+                                                    min={-2}
+                                                    max={2}
+                                                    step={0.005}
+                                                    value={[
+                                                        (options as any)
+                                                            .juliaImag,
+                                                    ]}
+                                                    onValueChange={([value]) =>
+                                                        updateOption(
+                                                            'juliaImag',
+                                                            value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
                                 </AccordionContent>
                             </AccordionItem>
 
@@ -463,9 +672,9 @@ export default function FractalPlayground() {
                                                     </span>
                                                 </div>
                                                 <Slider
-                                                    min={50}
-                                                    max={config.maxIter}
-                                                    step={10}
+                                                    min={100}
+                                                    max={600}
+                                                    step={50}
                                                     value={[
                                                         (options as any)
                                                             .resolution,
