@@ -136,7 +136,10 @@ function MyPlayground() {
       </label>
 
       {/* Gradient Selector */}
-      <select value={selectedGradient} onChange={(e) => setGradient(e.target.value)}>
+      <select
+        value={selectedGradient}
+        onChange={(e) => setGradient(e.target.value)}
+      >
         {GRADIENT_PRESETS.map((preset) => (
           <option key={preset.name} value={preset.name}>
             {preset.name}
