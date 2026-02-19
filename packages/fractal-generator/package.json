@@ -1,6 +1,6 @@
 {
   "name": "@cbnsndwch/fractal-generator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Isomorphic TypeScript library for generating fractal SVGs",
   "license": "MIT",
   "author": {
